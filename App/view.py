@@ -24,6 +24,8 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+import threading
+from DISClib.ADT import stack
 assert cf
 
 
@@ -36,23 +38,43 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar Analizador")
+    print("2- Cargar información de buses de singapur")
+    print('3- Encontrar puntos de interconexión aérea')
+    print('4- Encontrar clústeres de tráfico aéreo')
+    print('5- Encontrar la ruta más corta entre ciudades')
+    print('6- Utilizar las millas de viajero')
+    print('7- Cuantificar el efecto de un aeropuerto cerrado')
+    print('8- Comparar con servicio WEB externo')
+    print('9- Visualizar gráficamente los requerimientos')
+    print('0- Salir')
+
 
 catalog = None
 
 """
 Menu principal
 """
-while True:
-    printMenu()
-    inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
 
-    elif int(inputs[0]) == 2:
-        pass
+def thread_cycle():
+    while True:
+        printMenu()
+        inputs = input('Seleccione una opción para continuar\n')
+        if int(inputs[0]) == 1:
+            print("Inicializando ....")
 
-    else:
-        sys.exit(0)
-sys.exit(0)
+            cont = controller.init()
+
+        elif int(inputs[0]) == 2:
+            
+            pass
+
+        else:
+            sys.exit(0)
+    sys.exit(0)
+
+if __name__ == "__main__":
+    threading.stack_size(67108864)  # 64MB stack
+    sys.setrecursionlimit(2 ** 20)
+    thread = threading.Thread(target=thread_cycle)
+    thread.start()
