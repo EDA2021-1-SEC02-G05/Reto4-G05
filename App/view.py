@@ -69,6 +69,30 @@ def thread_cycle():
             
             pass
 
+        elif int(inputs[0]) == 3:
+            pass
+        
+        elif int(inputs[0]) == 4:
+            pass
+
+        elif int(inputs[0]) == 5:
+            pass
+
+        elif int(inputs[0]) == 6:
+            pass
+
+        elif int(inputs[0]) == 7:
+            pass
+
+        elif int(inputs[0]) == 8:
+            pass
+
+        elif int(inputs[0]) == 9:
+            pass
+
+        elif int(inputs[0]) == 0:
+            sys.exit(0)
+            
         else:
             sys.exit(0)
     sys.exit(0)
