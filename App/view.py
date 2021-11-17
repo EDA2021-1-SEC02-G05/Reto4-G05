@@ -56,6 +56,7 @@ catalog = None
 Menu principal
 """
 
+
 def thread_cycle():
     while True:
         printMenu()
