@@ -79,15 +79,6 @@ def newAnalyzer():
                                               comparefunction=compareStopIds)
 
 
-        analyzer['2'] = gr.newGraph(datastructure='ADJ_LIST',
-                                              directed=True,
-                                              size=14000,
-                                              comparefunction=compare2)
-
-        analyzer['3'] = gr.newGraph(datastructure='ADJ_LIST',
-                                              directed=True,
-                                              size=14000,
-                                              comparefunction=compare3)
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
