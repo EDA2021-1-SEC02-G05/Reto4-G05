@@ -25,14 +25,15 @@
  """
 
 
-import config as cf
+import config
 from DISClib.ADT.graph import gr
+from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
-from DISClib.ADT import map as mp
-from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Graphs import scc
+from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
-assert cf
+assert config
+
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -101,10 +102,14 @@ def compareStopIds(stop, keyvaluestop):
     else:
         return -1
 
-def compare2():
-    pass
-
-def compare3():
-    pass
-
+def compareroutes(route1, route2):
+    """
+    Compara dos rutas
+    """
+    if (route1 == route2):
+        return 0
+    elif (route1 > route2):
+        return 1
+    else:
+        return -1
 # Funciones de ordenamiento
