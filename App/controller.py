@@ -40,7 +40,7 @@ def init():
     return analyzer
 
 
-def loadServices(analyzer, servicesfile, routesfile):
+def loadData(analyzer, airportfile, routesfile, citiesfile):
     """
     Carga los datos de los archivos CSV en el modelo.
     Se crea un arco entre cada par de estaciones que
@@ -49,22 +49,39 @@ def loadServices(analyzer, servicesfile, routesfile):
     addRouteConnection crea conexiones entre diferentes rutas
     servidas en una misma estación.
     """
-    servicesfile = cf.data_dir + servicesfile
-    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
-                                delimiter=",")
-    lastservice = None
-    for service in input_file:
-        if lastservice is not None:
-            sameservice = lastservice['ServiceNo'] == service['ServiceNo']
-            samedirection = lastservice['Direction'] == service['Direction']
-            samebusStop = lastservice['BusStopCode'] == service['BusStopCode']
-            if sameservice and samedirection and not samebusStop:
-                model.addStopConnection(analyzer, lastservice, service)
-        lastservice = service
-    model.addRouteConnections(analyzer)
+    loadAirport(analyzer,airportfile)
+    loadRoutes(analyzer,routesfile)
+    loadCities(analyzer,citiesfile)
+
     return analyzer
 
+def loadAirport(analyzer, airports):
 
+    airportfile = cf.data_dir + airports
+    input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
+                                delimiter=",")
+
+    for airport in input_file:
+
+        model.addAirportVertex(analyzer, airport)
+
+    pass
+
+def loadRoutes(analyzer, routes):
+
+    routesfile = cf.data_dir + routes
+    input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
+                                delimiter=",")
+
+    for route in input_file:
+
+        
+
+    pass
+
+def loadCities(analyzer, citiesfile):
+
+    pass
 
 # Funciones para la carga de datos
 

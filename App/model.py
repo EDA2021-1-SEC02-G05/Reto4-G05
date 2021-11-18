@@ -83,7 +83,66 @@ def newAnalyzer():
 
 # Funciones para agregar informacion al catalogo
 
+def addAirportVertex(analyzer, airport):
+
+    if not gr.containsVertex(analyzer['AirportRoutesD'], airport):
+        gr.insertVertex(analyzer['AirportRoutesD'], airport)
+
+    if not gr.containsVertex(analyzer['AirportRoutesND'], airport):
+        gr.insertVertex(analyzer['AirportRoutesND'], airport)
+
+    if not gr.containsVertex(analyzer['AirportCities'], airport):
+        gr.insertVertex(analyzer['AirportCities'], airport)
+
+    return analyzer
+
+def addAirportConnection(analyzer, lastservice, service):
+    """
+    Adiciona las estaciones al grafo como vertices y arcos entre las
+    estaciones adyacentes.
+
+    Los vertices tienen por nombre el identificador de la estacion
+    seguido de la ruta que sirve.  Por ejemplo:
+
+    75009-10
+
+    Si la estacion sirve otra ruta, se tiene: 75009-101
+    """
+
+    origin = formatVertex(lastservice)
+    destination = formatVertex(service)
+    cleanServiceDistance(lastservice, service)
+    distance = float(service['Distance']) - float(lastservice['Distance'])
+    distance = abs(distance)
+    addAirport(analyzer, origin)
+    addAirport(analyzer, destination)
+    addConnection(analyzer, origin, destination, distance)
+    addRouteStop(analyzer, service)
+    addRouteStop(analyzer, lastservice)
+    return analyzer
+
+
 # Funciones para creacion de datos
+
+def cleanServiceDistance(lastservice, service):
+    """
+    En caso de que el archivo tenga un espacio en la
+    distancia, se reemplaza con cero.
+    """
+    if service['Distance'] == '':
+        service['Distance'] = 0
+    if lastservice['Distance'] == '':
+        lastservice['Distance'] = 0
+
+def formatVertex(service):
+    """
+    Se formatea el nombrer del vertice con el id de la estación
+    seguido de la ruta.
+    """
+    name = service['Name'] + '-'
+    name = name + service['IATA']
+    return name
+
 
 # Funciones de consulta
 
