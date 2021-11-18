@@ -45,6 +45,7 @@ los mismos.
 def newAnalyzer():
     """ Inicializa el analizador
 
+
    stops: Tabla de hash para guardar los vertices del grafo
    connections: Grafo para representar las rutas entre estaciones
    components: Almacena la informacion de los componentes conectados
