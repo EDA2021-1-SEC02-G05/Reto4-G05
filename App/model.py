@@ -53,17 +53,26 @@ def newAnalyzer():
     """
     try:
         analyzer = {
-                    'stops': None,
-                    'AirportRoutes': None,
-                    'components': None,
-                    'paths': None
+                    'Connections': None,
+                    'AirportRoutesD': None,
+                    'AirportRoutesND': None,
+                    'AirportCities': None
                     }
 
-        analyzer['stops'] = m.newMap(numelements=14000,
+        analyzer['Connections'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
-                                     comparefunction=compareStopIds)
+                                     comparefunction=compareAirportIATA)
 
-        analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
+        analyzer['AirportRoutesD'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              comparefunction=compareStopIds)
+
+        analyzer['AirportRoutesND'] = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=True,
+                                              size=14000,
+                                              comparefunction=compareStopIds)
+        analyzer['AirportCities'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
@@ -79,14 +88,14 @@ def newAnalyzer():
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
-def compareStopIds(stop, keyvaluestop):
+def compareAirportIATA(IATA, keyvalue):
     """
-    Compara dos estaciones
+    Compara dos aeropuertos
     """
-    stopcode = keyvaluestop['key']
-    if (stop == stopcode):
+    IATAcode = keyvalue['key']
+    if (IATA == IATAcode):
         return 0
-    elif (stop > stopcode):
+    elif (IATA > IATAcode):
         return 1
     else:
         return -1
