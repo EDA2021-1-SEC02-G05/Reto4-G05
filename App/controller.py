@@ -39,7 +39,7 @@ def init():
     analyzer = model.newAnalyzer()
     return analyzer
 
-    
+
 
 # Funciones para la carga de datos
 
