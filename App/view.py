@@ -80,8 +80,12 @@ def thread_cycle():
 
             #TODO: TOTAL CIUDADES
 
-            #first_airportD
-            #first_airportND
+            airportDs = gr.vertices(analyzer['AirportRoutesD'])
+            first_airportD = airportDs[0]
+            
+            airportNDs = gr.vertices(analyzer['AirportRoutesND'])
+            first_airportND = airportNDs[0]
+            
             #last_city
 
 
