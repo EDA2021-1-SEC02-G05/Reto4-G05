@@ -40,7 +40,7 @@ def init():
     return analyzer
 
 
-def loadData(analyzer, airportfile, routesfile, citiesfile):
+def loadData(analyzer):
     """
     Carga los datos de los archivos CSV en el modelo.
     Se crea un arco entre cada par de estaciones que
@@ -49,15 +49,15 @@ def loadData(analyzer, airportfile, routesfile, citiesfile):
     addRouteConnection crea conexiones entre diferentes rutas
     servidas en una misma estación.
     """
-    loadAirport(analyzer,airportfile)
-    loadRoutes(analyzer,routesfile)
-    loadCities(analyzer,citiesfile)
+    loadAirport(analyzer)
+    loadRoutes(analyzer)
+    loadCities(analyzer)
 
     return analyzer
 
-def loadAirport(analyzer, airports):
+def loadAirport(analyzer):
 
-    airportfile = cf.data_dir + airports
+    airportfile = cf.data_dir + '/Skylines/airports_full.csv'
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
 
@@ -67,9 +67,9 @@ def loadAirport(analyzer, airports):
 
     pass
 
-def loadRoutes(analyzer, routes):
+def loadRoutes(analyzer):
 
-    routesfile = cf.data_dir + routes
+    routesfile = cf.data_dir + '/Skylines/routes_full.csv'
     input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
 
@@ -77,9 +77,9 @@ def loadRoutes(analyzer, routes):
 
         model.addAirportConnection(analyzer, route)
 
-def loadCities(analyzer, cities):
+def loadCities(analyzer):
 
-    citiesfile = cf.data_dir + cities
+    citiesfile = cf.data_dir + '/Skylines/worldcities.csv'
     input_file = csv.DictReader(open(citiesfile, encoding="utf-8"),
                                 delimiter=",")
 

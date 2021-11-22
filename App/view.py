@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT.graph import gr
 import threading
 from DISClib.ADT import stack
 assert cf
@@ -64,11 +65,25 @@ def thread_cycle():
         if int(inputs[0]) == 1:
             print("Inicializando ....")
 
-            cont = controller.init()
+            analyzer = controller.init()
 
         elif int(inputs[0]) == 2:
-            
-            pass
+
+            print('Cargando información de aeropuertos en el mundo...')
+
+            controller.loadData(analyzer)
+            num_airportsD = gr.numVertices(analyzer['AirportRoutesD'])
+            num_airportsND = gr.numVertices(analyzer['AirportRoutesND'])
+
+            num_routesD = gr.numEdges(analyzer['AirportRoutesD'])
+            num_routesND = gr.numEdges(analyzer['AirportRoutesND'])
+
+            #TODO: TOTAL CIUDADES
+
+            #first_airportD
+            #first_airportND
+            #last_city
+
 
         elif int(inputs[0]) == 3:
             pass
