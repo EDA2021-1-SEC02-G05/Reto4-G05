@@ -67,7 +67,7 @@ def newAnalyzer():
         analyzer['AirportRoutesD'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=compareStopIds)
+                                              comparefunction=compareAirport )
 
         analyzer['AirportRoutesND'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
@@ -116,11 +116,28 @@ def addAirportConnection(analyzer, lastservice, service):
     cleanServiceDistance(lastservice, service)
     distance = float(service['Distance']) - float(lastservice['Distance'])
     distance = abs(distance)
-    addAirport(analyzer, origin)
-    addAirport(analyzer, destination)
     addConnection(analyzer, origin, destination, distance)
-    addRouteStop(analyzer, service)
-    addRouteStop(analyzer, lastservice)
+
+    return analyzer
+
+def addAirportCity(analyzer, city):
+
+    
+
+
+
+    pass
+
+def addConnection(analyzer, origin, destination, distance):
+
+    ' Adiciona un arco entre dos aeropuertos'
+
+    arco = gr.getEdge(analyzer['AirportRoutesD'],origin, destination)
+
+    if arco is None:
+
+        gr.addEdge(analyzer['AirportRoutesD'],origin, destination, distance)
+
     return analyzer
 
 

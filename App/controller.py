@@ -75,13 +75,18 @@ def loadRoutes(analyzer, routes):
 
     for route in input_file:
 
-        
+        model.addAirportConnection(analyzer, route)
 
-    pass
+def loadCities(analyzer, cities):
 
-def loadCities(analyzer, citiesfile):
+    citiesfile = cf.data_dir + cities
+    input_file = csv.DictReader(open(citiesfile, encoding="utf-8"),
+                                delimiter=",")
 
-    pass
+    for city in input_file:
+
+        model.addAirportCity(analyzer, city)
+
 
 # Funciones para la carga de datos
 
