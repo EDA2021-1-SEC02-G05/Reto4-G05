@@ -67,16 +67,16 @@ def newAnalyzer():
         analyzer['AirportRoutesD'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=compareAirport )
+                                              comparefunction=compareAirport)
 
         analyzer['AirportRoutesND'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=False,
                                               size=14000,
-                                              comparefunction=compareStopIds)
+                                              comparefunction=compareAirport)
         analyzer['AirportCities'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=compareStopIds)
+                                              comparefunction=compareAirport)
 
 
         return analyzer
@@ -140,7 +140,7 @@ def addConnection(graph, origin, destination, distance):
 
         gr.addEdge(graph,origin, destination, distance)
 
-    return analyzer
+    return graph
 
 
 # Funciones para creacion de datos
@@ -168,6 +168,8 @@ def formatVertex(service):
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+def compareAirport():
+    pass
 
 def compareAirportIATA(IATA, keyvalue):
     """
