@@ -59,7 +59,6 @@ def newAnalyzer():
                     'AirportRoutesND': None,
                     'AirportCities': None
                     }
-
         analyzer['Connections'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
@@ -119,7 +118,7 @@ def addAirportConnection(analyzer, route):
     distance = abs(distance)
     addConnection(analyzer['AirportRoutesD'], origin, destination, distance)
 
-    addConnection(analyzer['AirportRoutesND'], origin, destination, distance) #ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
+    #addConnection(analyzer['AirportRoutesND'], origin, destination, distance) #ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
 
     return analyzer
 
@@ -168,7 +167,7 @@ def formatVertex(service):
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareAirport():
-    pass
+     pass
 
 def compareAirportIATA(IATA, keyvalue):
     """
