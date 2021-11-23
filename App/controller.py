@@ -72,10 +72,9 @@ def loadRoutes(analyzer):
     routesfile = cf.data_dir + '/Skylines/routes_full.csv'
     input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
-
     for route in input_file:
+            model.addAirportConnection(analyzer, route)
 
-        model.addAirportConnection(analyzer, route)
 
 def loadCities(analyzer):
 

@@ -98,7 +98,7 @@ def addAirportVertex(analyzer, airport):
 
     return analyzer
 
-def addAirportConnection(analyzer, lastservice, service):
+def addAirportConnection(analyzer, route):
     """
     Adiciona las estaciones al grafo como vertices y arcos entre las
     estaciones adyacentes.
@@ -111,10 +111,11 @@ def addAirportConnection(analyzer, lastservice, service):
     Si la estacion sirve otra ruta, se tiene: 75009-101
     """
 
-    origin = formatVertex(lastservice)
-    destination = formatVertex(service)
-    cleanServiceDistance(lastservice, service)
-    distance = float(service['Distance']) - float(lastservice['Distance'])
+
+    origin = formatVertex(route['Departure'])
+    destination = formatVertex(route['Destination'])
+    cleanDistance(route['Departure'], route['Destination'])
+    distance = float(route['distance_km'])
     distance = abs(distance)
     addConnection(analyzer['AirportRoutesD'], origin, destination, distance)
 
@@ -123,8 +124,6 @@ def addAirportConnection(analyzer, lastservice, service):
     return analyzer
 
 def addAirportCity(analyzer, city):
-
-    
 
 
 
@@ -140,20 +139,20 @@ def addConnection(graph, origin, destination, distance):
 
         gr.addEdge(graph,origin, destination, distance)
 
-    return analyzer
+    return graph
 
 
 # Funciones para creacion de datos
 
-def cleanServiceDistance(lastservice, service):
+def cleanDistance(origin, destination):
     """
     En caso de que el archivo tenga un espacio en la
     distancia, se reemplaza con cero.
     """
-    if service['Distance'] == '':
-        service['Distance'] = 0
-    if lastservice['Distance'] == '':
-        lastservice['Distance'] = 0
+    if origin['Distance'] == '':
+        origin['Distance'] = 0
+    if destination['Distance'] == '':
+        destination['Distance'] = 0
 
 def formatVertex(service):
     """
