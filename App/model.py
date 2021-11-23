@@ -60,6 +60,7 @@ def newAnalyzer():
                     'AirportCities': None
                     }
 
+
         analyzer['Connections'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
