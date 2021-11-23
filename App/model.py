@@ -59,8 +59,6 @@ def newAnalyzer():
                     'AirportRoutesND': None,
                     'AirportCities': None
                     }
-
-
         analyzer['Connections'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
@@ -68,16 +66,16 @@ def newAnalyzer():
         analyzer['AirportRoutesD'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=compareAirport)
+                                              comparefunction=compareAirport )
 
         analyzer['AirportRoutesND'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=False,
                                               size=14000,
-                                              comparefunction=compareAirport)
+                                              comparefunction=compareStopIds)
         analyzer['AirportCities'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=compareAirport)
+                                              comparefunction=compareStopIds)
 
 
         return analyzer
@@ -120,7 +118,7 @@ def addAirportConnection(analyzer, route):
     distance = abs(distance)
     addConnection(analyzer['AirportRoutesD'], origin, destination, distance)
 
-    addConnection(analyzer['AirportRoutesND'], origin, destination, distance) #ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
+    #addConnection(analyzer['AirportRoutesND'], origin, destination, distance) #ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
 
     return analyzer
 
@@ -168,8 +166,6 @@ def formatVertex(service):
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
-def compareAirport():
-    pass
 
 def compareAirportIATA(IATA, keyvalue):
     """
