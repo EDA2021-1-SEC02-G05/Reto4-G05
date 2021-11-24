@@ -26,7 +26,7 @@
 
 
 import config
-from DISClib.ADT.graph import gr
+from DISClib.ADT.graph import getEdge, gr
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
@@ -101,11 +101,14 @@ def addAirportVertex(analyzer, airport):
 
     entry = m.get(map, airport['IATA'])
 
-    if entry is None:
-        m.put(map, airport['IATA'], airport)
-
     if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
         gr.insertVertex(analyzer['AirportRoutesD'], airport1)
+
+    if not gr.containsVertex(analyzer['AirportRoutesND'], airport1):
+        gr.insertVertex(analyzer['AirportRoutesND'], airport1)
+
+    if entry is None:
+        m.put(map, airport['IATA'], airport)
 
     return analyzer
 
@@ -130,8 +133,16 @@ def addAirportConnection(analyzer, route):
     distance = abs(distance)
     addConnection(analyzer['AirportRoutesD'], origin, destination, distance)
 
-    #addConnection(analyzer['AirportRoutesND'], origin, destination, distance) ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
+    addAirportNDConnection(analyzer,origin,destination,distance)
 
+def addAirportNDConnection(analyzer,origin,destination,distance): 
+    #addConnection(analyzer['AirportRoutesND'], origin, destination, distance) ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
+    arco_origin = getEdge(analyzer['AirportRoutesD'],origin,destination)
+    arco_destination = getEdge(analyzer['AirportRoutesD'],destination,origin)
+
+    if arco_origin != None and arco_destination != None:
+        addConnection(analyzer['AirportRoutesND'], origin, destination, distance)
+    
     return analyzer
 
 def addAirportCity(analyzer, city):
@@ -180,7 +191,6 @@ def formatVertex(service):
     seguido de la ruta.
     """
     name = service['IATA']
-    #name = name + service['IATA']
     return name
 
 
