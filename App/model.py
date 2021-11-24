@@ -104,8 +104,6 @@ def addAirportVertex(analyzer, airport):
     if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
         gr.insertVertex(analyzer['AirportRoutesD'], airport1)
 
-    if not gr.containsVertex(analyzer['AirportRoutesND'], airport1):
-        gr.insertVertex(analyzer['AirportRoutesND'], airport1)
 
     if entry is None:
         m.put(map, airport['IATA'], airport)
@@ -141,7 +139,14 @@ def addAirportNDConnection(analyzer,origin,destination,distance):
     arco_destination = getEdge(analyzer['AirportRoutesD'],destination,origin)
 
     if arco_origin != None and arco_destination != None:
+        if not gr.containsVertex(analyzer['AirportRoutesND'], origin):
+            gr.insertVertex(analyzer['AirportRoutesND'], origin)
+
+        if not gr.containsVertex(analyzer['AirportRoutesND'], destination):
+            gr.insertVertex(analyzer['AirportRoutesND'], destination)
+
         addConnection(analyzer['AirportRoutesND'], origin, destination, distance)
+
     
     return analyzer
 
