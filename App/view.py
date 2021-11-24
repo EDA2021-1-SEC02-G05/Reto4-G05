@@ -54,6 +54,22 @@ def printMenu():
 
 catalog = None
 
+def printReq1():
+    pass
+
+def printReq2(total_clusters, aeropuertos_mismo, IATA1, IATA2):
+
+    print('El número total de clusters dentro de la red de tráfico aéreo encontrados es de ' + str(total_clusters) + ' clusters.\n')
+    
+    if aeropuertos_mismo == True :
+
+        print('El aeropuerto identificado por el IATA ' + str(IATA1) + ' y el identificado por el IATA ' + str(IATA2) + ' SI pertenecen al mismo cluster.')
+
+    else:
+
+        print('El aeropuerto identificado por el IATA ' + str(IATA1) + ' y el identificado por el IATA ' + str(IATA2) + ' NO pertenecen al mismo cluster.')
+
+
 """
 Menu principal
 """
@@ -73,6 +89,8 @@ def thread_cycle():
             print('Cargando información de aeropuertos en el mundo...')
 
             controller.loadData(analyzer)
+
+            clusters = controller.getcluster(analyzer)
 
            
             num_airportsD = gr.numVertices(analyzer['AirportRoutesD'])
@@ -107,21 +125,29 @@ def thread_cycle():
             
             #grafo no dirigido
 
-
             city_last = lt.getElement(analyzer['Cities_lst'], num_ciudades)
 
             print('\n A continuación se muestra la información de la última ciudad cargada: \n')
 
             print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng'])
 
-
-
         elif int(inputs[0]) == 3:
+
+
             pass
         
         elif int(inputs[0]) == 4:
-            pass
 
+            'Requerimiento 2: clusters de tráfico aéreo'
+
+            IATA1 = (input('Primer aeropuerto a consultar (código IATA): ')).upper
+            IATA2 = (input('Segundo aeropuerto a consultar (código IATA): ')).upper
+
+            cluster_respuesta = controller.getTraficClusters(clusters, IATA1, IATA2)
+
+            printReq2(cluster_respuesta[0],cluster_respuesta[1], IATA1, IATA2)
+
+    
         elif int(inputs[0]) == 5:
             pass
 

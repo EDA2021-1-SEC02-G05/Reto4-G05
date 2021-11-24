@@ -186,6 +186,20 @@ def formatVertex(service):
 
 # Funciones de consulta
 
+def getcluster(analyzer):
+
+    cluster_info = scc.KosarajuSCC(analyzer['AirportRoutesD'])
+
+    return cluster_info
+
+def getTraficClusters(cluster, IATA1,IATA2):
+
+    cluster_num = scc.connectedComponents(cluster)
+
+    airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
+
+    return cluster_num, airports_connected
+
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
