@@ -54,28 +54,37 @@ def newAnalyzer():
     """
     try:
         analyzer = {
-                    'Connections': None,
+                    'AirportIATAS': None,
                     'AirportRoutesD': None,
                     'AirportRoutesND': None,
-                    'AirportCities': None
+                    'AirportCities': None,
+                    'CitiesMapInfo': None,
+                    'Cities_lst':None
                     }
-        analyzer['Connections'] = m.newMap(numelements=14000,
+        analyzer['AirportIATAS'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
 
         analyzer['AirportRoutesD'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=compareAirport)
+                                              comparefunction=compareAirportIATA)
 
         analyzer['AirportRoutesND'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=False,
                                               size=14000,
-                                              comparefunction=compareAirport)
+                                              comparefunction=compareAirportIATA)
+
         analyzer['AirportCities'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
-                                              comparefunction=compareAirport)
+                                              comparefunction=compareAirportIATA)
+
+        analyzer['Cities_lst'] = lt.newList('ARRAY_LIST')
+
+        analyzer['CitiesMapInfo'] = m.newMap(numelements=5000,
+                                     maptype='PROBING',
+                                     comparefunction=compareAirportIATA)
 
 
         return analyzer
@@ -86,16 +95,20 @@ def newAnalyzer():
 
 def addAirportVertex(analyzer, airport):
 
-    if not gr.containsVertex(analyzer['AirportRoutesD'], airport):
-        gr.insertVertex(analyzer['AirportRoutesD'], airport)
+    airport1 = formatVertex(airport)
 
-    if not gr.containsVertex(analyzer['AirportRoutesND'], airport):
-        gr.insertVertex(analyzer['AirportRoutesND'], airport)
+    map = analyzer['AirportIATAS']
 
-    if not gr.containsVertex(analyzer['AirportCities'], airport):
-        gr.insertVertex(analyzer['AirportCities'], airport)
+    entry = m.get(map, airport['IATA'])
+
+    if entry is None:
+        m.put(map, airport['IATA'], airport)
+
+    if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
+        gr.insertVertex(analyzer['AirportRoutesD'], airport1)
 
     return analyzer
+
 
 def addAirportConnection(analyzer, route):
     """
@@ -109,24 +122,33 @@ def addAirportConnection(analyzer, route):
 
     Si la estacion sirve otra ruta, se tiene: 75009-101
     """
+    origin = route['Departure']
+    destination = route['Destination']
 
-
-    origin = formatVertex(route['Departure'])
-    destination = formatVertex(route['Destination'])
-    cleanDistance(route['Departure'], route['Destination'])
+    cleanDistance(route['distance_km'])
     distance = float(route['distance_km'])
     distance = abs(distance)
     addConnection(analyzer['AirportRoutesD'], origin, destination, distance)
 
-    #addConnection(analyzer['AirportRoutesND'], origin, destination, distance) #ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
+    #addConnection(analyzer['AirportRoutesND'], origin, destination, distance) ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
 
     return analyzer
 
 def addAirportCity(analyzer, city):
 
+    city_lst = analyzer['Cities_lst']
 
+    lt.addLast(city_lst,city)
 
-    pass
+    city_map = analyzer['CitiesMapInfo']
+
+    entry = m.get(city_map,city['city'])
+
+    if entry == None:
+
+        m.put(city_map, city['city'], city)
+
+    return analyzer
 
 def addConnection(graph, origin, destination, distance):
 
@@ -143,27 +165,28 @@ def addConnection(graph, origin, destination, distance):
 
 # Funciones para creacion de datos
 
-def cleanDistance(origin, destination):
+def cleanDistance(distance):
     """
     En caso de que el archivo tenga un espacio en la
     distancia, se reemplaza con cero.
     """
-    if origin['Distance'] == '':
-        origin['Distance'] = 0
-    if destination['Distance'] == '':
-        destination['Distance'] = 0
+    if distance == '':
+        distance = 0
+
 
 def formatVertex(service):
     """
     Se formatea el nombrer del vertice con el id de la estación
     seguido de la ruta.
     """
-    name = service['Name'] + '-'
-    name = name + service['IATA']
+    name = service['IATA']
+    #name = name + service['IATA']
     return name
 
 
 # Funciones de consulta
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareAirport():

@@ -65,7 +65,6 @@ def loadAirport(analyzer):
 
         model.addAirportVertex(analyzer, airport)
 
-    pass
 
 def loadRoutes(analyzer):
 

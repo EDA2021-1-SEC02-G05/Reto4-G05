@@ -26,6 +26,7 @@ import controller
 from DISClib.ADT import list as lt
 from DISClib.ADT.graph import gr
 import threading
+from DISClib.ADT import map as m
 from DISClib.ADT import stack
 assert cf
 
@@ -40,7 +41,7 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Inicializar Analizador")
-    print("2- Cargar información de buses de singapur")
+    print("2- Cargar información de aeropuertos")
     print('3- Encontrar puntos de interconexión aérea')
     print('4- Encontrar clústeres de tráfico aéreo')
     print('5- Encontrar la ruta más corta entre ciudades')
@@ -72,21 +73,47 @@ def thread_cycle():
             print('Cargando información de aeropuertos en el mundo...')
 
             controller.loadData(analyzer)
+
+           
             num_airportsD = gr.numVertices(analyzer['AirportRoutesD'])
             num_airportsND = gr.numVertices(analyzer['AirportRoutesND'])
+
+            print('Total de vértices del grafo dirigido: ' + str(num_airportsD))
+            print('Total de vértices del grafo no dirigido: ' + str(num_airportsND) + '\n')
 
             num_routesD = gr.numEdges(analyzer['AirportRoutesD'])
             num_routesND = gr.numEdges(analyzer['AirportRoutesND'])
 
-            #TODO: TOTAL CIUDADES
+            print('Total de arcos del grafo dirigido: ' + str(num_routesD))
+            print('Total de arcos del grafo no dirigido: ' + str(num_routesND) + '\n')
+
+        
+            num_ciudades = lt.size(analyzer['Cities_lst'])
+
+            print('Total de ciudades cargadas: ' + str(num_ciudades) + '\n')
+
+            airport_mapa = analyzer['AirportIATAS']
+            city_map = analyzer['CitiesMapInfo']
 
             airportDs = gr.vertices(analyzer['AirportRoutesD'])
-            first_airportD = airportDs[0]
+            first_airportD = lt.getElement(airportDs, 1)
+
+            airport_infoD = m.get(airport_mapa, first_airportD)
+
+            #grafo no dirigido
+
+            print('\n A continuación se muestra la información del primer aeropuerto cargado para el grafo dirigido y no dirigido respectivamente: \n')
+            print('Nombre: ' + airport_infoD['value']['Name'] + ', Ciudad: ' + airport_infoD['value']['City'] + ', Pais: ' + airport_infoD['value']['Country'] + ', Latitud: ' + airport_infoD['value']['Latitude'] + ', Longitud: ' + airport_infoD['value']['Longitude'] )
             
-            airportNDs = gr.vertices(analyzer['AirportRoutesND'])
-            first_airportND = airportNDs[0]
-            
-            #last_city
+            #grafo no dirigido
+
+
+            city_last = lt.getElement(analyzer['Cities_lst'], num_ciudades)
+
+            print('\n A continuación se muestra la información de la última ciudad cargada: \n')
+
+            print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng'])
+
 
 
         elif int(inputs[0]) == 3:
