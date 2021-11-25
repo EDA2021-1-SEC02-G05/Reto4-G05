@@ -105,29 +105,29 @@ def thread_cycle():
             print('Total de arcos del grafo dirigido: ' + str(num_routesD))
             print('Total de arcos del grafo no dirigido: ' + str(num_routesND) + '\n')
 
-        
-            num_ciudades = lt.size(analyzer['Cities_lst'])
+            city_map = analyzer['CitiesMapInfo']
+            num_ciudades = m.size(city_map)
 
             print('Total de ciudades cargadas: ' + str(num_ciudades) + '\n')
 
             airport_mapa = analyzer['AirportIATAS']
-            city_map = analyzer['CitiesMapInfo']
 
             airportDs = gr.vertices(analyzer['AirportRoutesD'])
             first_airportD = lt.getElement(airportDs, 1)
-
             airport_infoD = m.get(airport_mapa, first_airportD)
 
-            #grafo no dirigido
+            airportNDs = gr.vertices(analyzer['AirportRoutesND'])
+            first_airportND = lt.getElement(airportNDs, 1)
+            airport_infoND = m.get(airport_mapa, first_airportND)
 
-            print('\n A continuación se muestra la información del primer aeropuerto cargado para el grafo dirigido y no dirigido respectivamente: \n')
+            print('\nA continuación se muestra la información del primer aeropuerto cargado para el grafo dirigido y no dirigido respectivamente: \n')
             print('Nombre: ' + airport_infoD['value']['Name'] + ', Ciudad: ' + airport_infoD['value']['City'] + ', Pais: ' + airport_infoD['value']['Country'] + ', Latitud: ' + airport_infoD['value']['Latitude'] + ', Longitud: ' + airport_infoD['value']['Longitude'] )
-            
-            #grafo no dirigido
+            print('Nombre: ' + airport_infoND['value']['Name'] + ', Ciudad: ' + airport_infoND['value']['City'] + ', Pais: ' + airport_infoND['value']['Country'] + ', Latitud: ' + airport_infoND['value']['Latitude'] + ', Longitud: ' + airport_infoND['value']['Longitude'] )
+
 
             city_last = lt.getElement(analyzer['Cities_lst'], num_ciudades)
 
-            print('\n A continuación se muestra la información de la última ciudad cargada: \n')
+            print('\nA continuación se muestra la información de la última ciudad cargada: \n')
 
             print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng'])
 

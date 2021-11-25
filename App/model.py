@@ -101,12 +101,12 @@ def addAirportVertex(analyzer, airport):
 
     entry = m.get(map, airport['IATA'])
 
+    if entry is None:
+        m.put(map, airport['IATA'], airport)
+
     if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
         gr.insertVertex(analyzer['AirportRoutesD'], airport1)
 
-
-    if entry is None:
-        m.put(map, airport['IATA'], airport)
 
     return analyzer
 
@@ -158,11 +158,11 @@ def addAirportCity(analyzer, city):
 
     city_map = analyzer['CitiesMapInfo']
 
-    entry = m.get(city_map,city['city'])
+    entry = m.get(city_map,city['id'])
 
     if entry == None:
 
-        m.put(city_map, city['city'], city)
+        m.put(city_map, city['id'], city)
 
     return analyzer
 
