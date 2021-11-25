@@ -215,6 +215,13 @@ def getTraficClusters(cluster, IATA1,IATA2):
 
     return cluster_num, airports_connected
 
+def getAffectedAirports(analyzer, IATA):
+
+    adj = gr.adjacents(analyzer['AirportRoutesD'],IATA)
+
+    size = lt.size(adj)
+
+    return adj, size
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

@@ -69,7 +69,17 @@ def printReq2(total_clusters, aeropuertos_mismo, IATA1, IATA2):
 
         print('El aeropuerto identificado por el IATA ' + str(IATA1) + ' y el identificado por el IATA ' + str(IATA2) + ' NO pertenecen al mismo cluster.')
 
+def printReq5(lista, tamano, IATA):
 
+    print('Si el aeropuerto identificado con el código IATA ' + str(IATA) + ' se encontrara fuera de servicio, ' + str(tamano) + ' aeropuertos se verían afectados.\n')
+
+    print('A continuación se presenta la lista de aeropuertos que se verían afectados: ')
+
+    for aero in lt.iterator(lista):
+
+        print(aero)
+
+    pass
 """
 Menu principal
 """
@@ -143,19 +153,32 @@ def thread_cycle():
             IATA1 = (input('Primer aeropuerto a consultar (código IATA): ')).upper
             IATA2 = (input('Segundo aeropuerto a consultar (código IATA): ')).upper
 
+
             cluster_respuesta = controller.getTraficClusters(clusters, IATA1, IATA2)
 
             printReq2(cluster_respuesta[0],cluster_respuesta[1], IATA1, IATA2)
 
     
         elif int(inputs[0]) == 5:
+
+            'Requerimiento 3: Encontrar la ruta más corta entre ciudades'
+
             pass
 
         elif int(inputs[0]) == 6:
+
+            'Requerimiento 4: Utilizar las millas de viajero'
             pass
 
         elif int(inputs[0]) == 7:
-            pass
+
+            'Requerimiento 5: Cuantificar el efecto de un aeropuerto cerrado'
+
+            IATA = input('Ingrese el código IATA del aeropuerto a consultar: ')
+
+            afectados = controller.getAffectedAirports(analyzer, IATA)
+
+            printReq5(afectados[0], afectados[1], IATA)
 
         elif int(inputs[0]) == 8:
             pass

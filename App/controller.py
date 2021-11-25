@@ -99,3 +99,8 @@ def getcluster(analyzer):
 def getTraficClusters(cluster, IATA1,IATA2):
 
     return model.getTraficClusters(cluster, IATA1,IATA2)
+
+
+def getAffectedAirports(analyzer, IATA):
+
+    return model.getAffectedAirports(analyzer, IATA)
