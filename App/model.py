@@ -60,7 +60,7 @@ def newAnalyzer():
                     'AirportRoutesND': None,
                     'AirportCities': None,
                     'CitiesMapInfo': None,
-                    'Cities_lst':None
+                    'Cities-ID': None
                     }
         analyzer['AirportIATAS'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
@@ -80,8 +80,6 @@ def newAnalyzer():
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareAirportIATA)
-
-        analyzer['Cities_lst'] = lt.newList('ARRAY_LIST')
 
         analyzer['CitiesMapInfo'] = m.newMap(numelements=5000,
                                      maptype='PROBING',
@@ -131,11 +129,10 @@ def addAirportConnection(analyzer, route):
     distance = float(route['distance_km'])
     distance = abs(distance)
     addConnection(analyzer['AirportRoutesD'], origin, destination, distance)
-
     addAirportNDConnection(analyzer,origin,destination,distance)
 
 def addAirportNDConnection(analyzer,origin,destination,distance): 
-    #addConnection(analyzer['AirportRoutesND'], origin, destination, distance) ESO YA HACE SOLO CONEXIONES ENTRE COMPONENTES QUE TENGA IDA Y VENIDA?
+
     arco_origin = getEdge(analyzer['AirportRoutesD'],origin,destination)
     arco_destination = getEdge(analyzer['AirportRoutesD'],destination,origin)
 
@@ -152,10 +149,6 @@ def addAirportNDConnection(analyzer,origin,destination,distance):
     return analyzer
 
 def addAirportCity(analyzer, city):
-
-    city_lst = analyzer['Cities_lst']
-
-    lt.addLast(city_lst,city)
 
     city_map = analyzer['CitiesMapInfo']
 
