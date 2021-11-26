@@ -32,6 +32,7 @@ from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from math import radians, cos, sin, asin, sqrt
 assert config
 
 
@@ -197,6 +198,24 @@ def formatVertex(service):
     """
     name = service['IATA']
     return name
+
+def harvesineDistance(lat1, lat2, lon1, lon2):
+
+    R = 6371 #radio de la tierra en km
+
+    lon1 = radians(lon1)
+    lon2 = radians(lon2)
+    lat1 = radians(lat1)
+    lat2 = radians(lat2)
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2*asin(sqrt(a))
+
+    return c * R
+
 
 
 # Funciones de consulta
