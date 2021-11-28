@@ -163,6 +163,30 @@ def thread_cycle():
 
             'Requerimiento 3: Encontrar la ruta más corta entre ciudades'
 
+            origen = (input('Escoja la ciudad de origen: ')).capitalize()
+
+            ciudades_o = controller.getCities(analyzer, origen)
+
+            if lt.size(ciudades_o) > 1:
+
+                print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
+                print(ciudades_o)
+
+                ciudad_o_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de origen: '))
+
+            
+            destino = (input('Escoja la ciudad de destino: ')).capitalize()
+
+            ciudades_d = controller.getCities(analyzer, destino)
+
+            if lt.size(ciudades_d) > 1:
+
+                print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
+                print(ciudades_d)
+
+                ciudad_d_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de destino: '))
+
+
             pass
 
         elif int(inputs[0]) == 6:

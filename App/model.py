@@ -28,6 +28,7 @@
 import config
 from DISClib.ADT.graph import getEdge, gr
 from DISClib.ADT import map as m
+from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
@@ -81,9 +82,15 @@ def newAnalyzer():
                                               size=14000,
                                               comparefunction=compareAirportIATA)
 
+        analyzer['Cities_lst'] = lt.newList('ARRAY_LIST')
+
         analyzer['CitiesMapInfo'] = m.newMap(numelements=5000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
+
+        analyzer['Cities-ID'] = m.newMap(numelements=5000,
+                                     maptype='PROBING',
+                                     comparefunction=compareCityName)
 
 
         return analyzer
@@ -151,14 +158,37 @@ def addAirportNDConnection(analyzer,origin,destination,distance):
 def addAirportCity(analyzer, city):
 
     city_map = analyzer['CitiesMapInfo']
+    city_id_map = analyzer['Cities-ID']
 
     entry = m.get(city_map,city['id'])
 
     if entry == None:
 
-        m.put(city_map, city['id'], city)
+        m.put(city_map, int(city['id']), city)
 
+    lt.addLast(analyzer['Cities_lst'], city)
+
+    citynamentry = m.get(city_id_map,city['city'])
+
+    if citynamentry == None:
+
+        value = newCity()
+        m.put(city_id_map, city['city'], value)
+        value = me.getValue()
+
+    else: 
+
+        value = me.getValue(citynamentry)
+
+    lt.addLast(value['ID'], city['id'])
+    
     return analyzer
+
+def newCity():
+
+    city = {'ID':lt.newList('ARRAY_LIST', cmpID)}   
+
+    return city
 
 def addConnection(graph, origin, destination, distance):
 
@@ -213,6 +243,13 @@ def harvesineDistance(lat1, lat2, lon1, lon2):
 
 # Funciones de consulta
 
+def getCities(analyzer, name):
+
+    entry = m.get(analyzer['CITIES-ID'], name)
+    value = me.getValue(entry)
+
+    return value['ID']
+
 def getcluster(analyzer):
 
     cluster_info = scc.KosarajuSCC(analyzer['AirportRoutesD'])
@@ -240,6 +277,16 @@ def getAffectedAirports(analyzer, IATA):
 def compareAirport():
      pass
 
+def compareCityName(name, key):
+
+    namekey = key['key']
+    if (name == namekey):
+        return 0
+    elif (name > namekey):
+        return 1
+    else:
+        return -1
+
 def compareAirportIATA(IATA, keyvalue):
     """
     Compara dos aeropuertos
@@ -260,6 +307,13 @@ def compareroutes(route1, route2):
         return 0
     elif (route1 > route2):
         return 1
+    else:
+        return -1
+
+def cmpID(ID1, ID2):
+
+    if (ID1 == ID2):
+        return 0
     else:
         return -1
 # Funciones de ordenamiento
