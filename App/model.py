@@ -236,18 +236,37 @@ def getInterconnections(analyzer):
 
 def getcluster(analyzer):
 
-    cluster_info = scc.KosarajuSCC(analyzer['AirportRoutesD'])
+    cluster = scc.KosarajuSCC(analyzer['AirportRoutesD'])
 
-    return cluster_info
+    return cluster
 
-def getTraficClusters(cluster, IATA1,IATA2):
+def getClusterNum(cluster):
 
     cluster_num = scc.connectedComponents(cluster)
 
+    return cluster_num
+
+
+def getTraficClustersCon(cluster, IATA1,IATA2):
+
     airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
 
-    return cluster_num, airports_connected
+    return airports_connected
 
+def getAffectedAirports(analyzer, IATA):
+
+    adj = gr.adjacents(analyzer['AirportRoutesD'],IATA)
+
+    size = lt.size(adj)
+
+    return adj, size
+
+def getCities(analyzer, name):
+
+    entry = m.get(analyzer['Cities-ID'], name)
+    value = me.getValue(entry)
+
+    return value['ID']
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

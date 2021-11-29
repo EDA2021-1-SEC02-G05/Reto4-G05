@@ -96,8 +96,8 @@ def thread_cycle():
             controller.loadData(analyzer)
 
             clusters = controller.getcluster(analyzer)
+            cluster_num = controller.getClusterNum(clusters)
 
-           
             num_airportsD = gr.numVertices(analyzer['AirportRoutesD'])
             num_airportsND = gr.numVertices(analyzer['AirportRoutesND'])
 
@@ -143,6 +143,7 @@ def thread_cycle():
             respuesta = controller.getInterconnections(analyzer)
             printReq1(respuesta)
         
+        
         elif int(inputs[0]) == 4:
 
             'Requerimiento 2: clusters de tráfico aéreo'
@@ -150,19 +151,60 @@ def thread_cycle():
             IATA1 = input('Primer aeropuerto a consultar (código IATA): ')
             IATA2 = input('Segundo aeropuerto a consultar (código IATA): ')
 
-            cluster_respuesta = controller.getTraficClusters(clusters, IATA1, IATA2)
+            cluster_con = controller.getTraficClustersCon(clusters, IATA1, IATA2)
 
-            printReq2(cluster_respuesta[0],cluster_respuesta[1], IATA1, IATA2)
+            printReq2(cluster_num,cluster_con, IATA1, IATA2)
 
-    
+        
         elif int(inputs[0]) == 5:
+
+            'Requerimiento 3: Encontrar la ruta más corta entre ciudades'
+
+            origen = (input('Escoja la ciudad de origen: ')).capitalize()
+
+            ciudades_o = controller.getCities(analyzer, origen)
+
+            if lt.size(ciudades_o) > 1:
+
+                print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
+
+                for ciudad in lt.iterator(ciudades_o):
+
+                    print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
+
+                ciudad_o_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de origen: '))
+
+            
+            destino = (input('Escoja la ciudad de destino: ')).capitalize()
+
+            ciudades_d = controller.getCities(analyzer, destino)
+
+            if lt.size(ciudades_d) > 1:
+
+                print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
+                for ciudad in lt.iterator(ciudades_d):
+
+                    print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
+
+                ciudad_d_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de destino: '))
+
+
             pass
 
         elif int(inputs[0]) == 6:
+
+            'Requerimiento 4: Utilizar las millas de viajero'
             pass
 
         elif int(inputs[0]) == 7:
-            pass
+
+            'Requerimiento 5: Cuantificar el efecto de un aeropuerto cerrado'
+
+            IATA = input('Ingrese el código IATA del aeropuerto a consultar: ')
+
+            afectados = controller.getAffectedAirports(analyzer, IATA)
+
+            printReq5(afectados[0], afectados[1], IATA)
 
         elif int(inputs[0]) == 8:
             pass
