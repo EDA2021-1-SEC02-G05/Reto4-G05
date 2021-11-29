@@ -137,7 +137,7 @@ def thread_cycle():
             print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng'])
 
         elif int(inputs[0]) == 3:
-            'Requerimiento 2: clusters de tráfico aéreo'
+            'Requerimiento 1: interconecciones'
 
             respuesta = controller.getInterconnections(analyzer)
             printReq1(respuesta)

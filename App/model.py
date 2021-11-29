@@ -85,8 +85,9 @@ def newAnalyzer():
         analyzer['CitiesMapInfo'] = m.newMap(numelements=5000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
-        
-        analyzer["AirpotsInterconnected"] = lt.newList('ARRAY_LIST',comparefunction=compareAirportIATA)
+        #proximamente...
+        #analyzer["AirpotsInterconnected"] = lt.newList('ARRAY_LIST',comparefunction=compareAirportIATA)
+        #analyzer["AirpotsInterconnectedND"] = lt.newList('ARRAY_LIST',comparefunction=compareAirportIATA)
 
 
         return analyzer
@@ -207,25 +208,25 @@ def formatVertex(service):
 # Funciones de consulta
 
 def getInterconnections(analyzer):
-    graph = analyzer['AirportRoutesND']
-    vertex_list = vertices(graph) 
+    graph = analyzer['AirportRoutesD']
+    vertex_list = gr.vertices(graph) 
     info_list = lt.newList("ARRAY_LIST", cmpfunction=compareconnections)
 
     graphND = analyzer['AirportRoutesND']
-    vertex_listND = vertices(graphND) 
+    vertex_listND = gr.vertices(graphND) 
     info_listND = lt.newList("ARRAY_LIST", cmpfunction=compareconnections)
 
     
     for vertex in vertex_list:
-        arocos_llegada = indegree(graph, vertex)
-        arcos_salida = outdegree(graph, vertex)
+        arocos_llegada = gr.indegree(graph, vertex)
+        arcos_salida = gr.outdegree(graph, vertex)
         total_arcos = arocos_llegada + arcos_salida
         datos = {"Aeropueto": vertex, 
                 "TotalConnections": total_arcos}
         lt.addLast(info_list, datos)
 
     for vertex in vertex_listND:
-        total_arcosND = degree(graphND,vertex)
+        total_arcosND = gr.degree(graphND,vertex)
         datos = {"Aeropueto": vertex, 
                 "TotalConnections": total_arcosND}
         lt.addLast(info_listND, datos)
