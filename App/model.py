@@ -26,12 +26,15 @@
 
 
 import config
-from DISClib.ADT.graph import degree, getEdge, gr, indegree, outdegree, vertices
+from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from math import radians, cos, sin, asin, sqrt
+from DISClib.DataStructures import mapentry as me
+
 assert config
 
 
@@ -137,8 +140,8 @@ def addAirportConnection(analyzer, route):
     addAirportNDConnection(analyzer,origin,destination,distance)
 
 def addAirportNDConnection(analyzer,origin,destination,distance): 
-    arco_origin = getEdge(analyzer['AirportRoutesD'],origin,destination)
-    arco_destination = getEdge(analyzer['AirportRoutesD'],destination,origin)
+    arco_origin = gr.getEdge(analyzer['AirportRoutesD'],origin,destination)
+    arco_destination = gr.getEdge(analyzer['AirportRoutesD'],destination,origin)
 
     if arco_origin != None and arco_destination != None:
         addAirportVertexND(analyzer, origin, destination)
@@ -203,6 +206,23 @@ def formatVertex(service):
     """
     name = service['IATA']
     return name
+
+def harvesineDistance(lat1, lat2, lon1, lon2):
+
+    R = 6371 #radio de la tierra en km
+
+    lon1 = radians(lon1)
+    lon2 = radians(lon2)
+    lat1 = radians(lat1)
+    lat2 = radians(lat2)
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2*asin(sqrt(a))
+
+    return c * R
 
 
 # Funciones de consulta

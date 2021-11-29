@@ -74,6 +74,15 @@ def printReq2(total_clusters, aeropuertos_mismo, IATA1, IATA2):
 
         print('El aeropuerto identificado por el IATA ' + str(IATA1) + ' y el identificado por el IATA ' + str(IATA2) + ' NO pertenecen al mismo cluster.')
 
+def printReq5(lista, tamano, IATA):
+
+    print('Si el aeropuerto identificado con el código IATA ' + str(IATA) + ' se encontrara fuera de servicio, ' + str(tamano) + ' aeropuertos se verían afectados.\n')
+
+    print('A continuación se presenta la lista de aeropuertos que se verían afectados: ')
+
+    for aero in lt.iterator(lista):
+
+        print(aero)
 
 """
 Menu principal
