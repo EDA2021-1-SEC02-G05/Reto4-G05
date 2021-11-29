@@ -91,6 +91,9 @@ def loadCities(analyzer):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def getInterconnections(analyzer):
+    
+    return model.getInterconnections(analyzer)
 
 def getcluster(analyzer):
 
