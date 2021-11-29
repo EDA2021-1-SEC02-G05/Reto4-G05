@@ -221,13 +221,13 @@ def getInterconnections(analyzer):
         arocos_llegada = gr.indegree(graph, vertex)
         arcos_salida = gr.outdegree(graph, vertex)
         total_arcos = arocos_llegada + arcos_salida
-        datos = {"Aeropueto": vertex, 
+        datos = {"Aeropuerto": vertex, 
                 "TotalConnections": total_arcos}
         lt.addLast(info_list, datos)
 
     for vertex in vertex_listND:
         total_arcosND = gr.degree(graphND,vertex)
-        datos = {"Aeropueto": vertex, 
+        datos = {"Aeropuerto": vertex, 
                 "TotalConnections": total_arcosND}
         lt.addLast(info_listND, datos)
 

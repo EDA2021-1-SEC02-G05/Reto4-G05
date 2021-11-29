@@ -137,6 +137,7 @@ def thread_cycle():
             print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng'])
 
         elif int(inputs[0]) == 3:
+
             'Requerimiento 1: interconecciones'
 
             respuesta = controller.getInterconnections(analyzer)
@@ -146,8 +147,8 @@ def thread_cycle():
 
             'Requerimiento 2: clusters de tráfico aéreo'
 
-            IATA1 = (input('Primer aeropuerto a consultar (código IATA): ')).upper
-            IATA2 = (input('Segundo aeropuerto a consultar (código IATA): ')).upper
+            IATA1 = input('Primer aeropuerto a consultar (código IATA): ')
+            IATA2 = input('Segundo aeropuerto a consultar (código IATA): ')
 
             cluster_respuesta = controller.getTraficClusters(clusters, IATA1, IATA2)
 
