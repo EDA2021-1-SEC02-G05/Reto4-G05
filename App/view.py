@@ -101,6 +101,7 @@ def thread_cycle():
             controller.loadData(analyzer)
 
             clusters = controller.getcluster(analyzer)
+            cluster_num = controller.getClusterNum(clusters)
 
            
             num_airportsD = gr.numVertices(analyzer['AirportRoutesD'])
@@ -150,13 +151,13 @@ def thread_cycle():
 
             'Requerimiento 2: clusters de tráfico aéreo'
 
-            IATA1 = (input('Primer aeropuerto a consultar (código IATA): ')).upper
-            IATA2 = (input('Segundo aeropuerto a consultar (código IATA): ')).upper
+            IATA1 = input('Primer aeropuerto a consultar (código IATA): ')
+            IATA2 = input('Segundo aeropuerto a consultar (código IATA): ')
 
 
-            cluster_respuesta = controller.getTraficClusters(clusters, IATA1, IATA2)
+            cluster_con = controller.getTraficClustersCon(clusters, IATA1, IATA2)
 
-            printReq2(cluster_respuesta[0],cluster_respuesta[1], IATA1, IATA2)
+            printReq2(cluster_num,cluster_con, IATA1, IATA2)
 
     
         elif int(inputs[0]) == 5:
@@ -170,7 +171,10 @@ def thread_cycle():
             if lt.size(ciudades_o) > 1:
 
                 print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
-                print(ciudades_o)
+
+                for ciudad in lt.iterator(ciudades_o):
+
+                    print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
 
                 ciudad_o_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de origen: '))
 
@@ -182,7 +186,9 @@ def thread_cycle():
             if lt.size(ciudades_d) > 1:
 
                 print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
-                print(ciudades_d)
+                for ciudad in lt.iterator(ciudades_d):
+
+                    print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
 
                 ciudad_d_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de destino: '))
 

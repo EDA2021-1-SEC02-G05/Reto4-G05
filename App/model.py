@@ -26,7 +26,7 @@
 
 
 import config
-from DISClib.ADT.graph import getEdge, gr
+from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
@@ -140,8 +140,8 @@ def addAirportConnection(analyzer, route):
 
 def addAirportNDConnection(analyzer,origin,destination,distance): 
 
-    arco_origin = getEdge(analyzer['AirportRoutesD'],origin,destination)
-    arco_destination = getEdge(analyzer['AirportRoutesD'],destination,origin)
+    arco_origin = gr.getEdge(analyzer['AirportRoutesD'],origin,destination)
+    arco_destination = gr.getEdge(analyzer['AirportRoutesD'],destination,origin)
 
     if arco_origin != None and arco_destination != None:
         if not gr.containsVertex(analyzer['AirportRoutesND'], origin):
@@ -160,7 +160,7 @@ def addAirportCity(analyzer, city):
     city_map = analyzer['CitiesMapInfo']
     city_id_map = analyzer['Cities-ID']
 
-    entry = m.get(city_map,city['id'])
+    entry = m.get(city_map,int(city['id']))
 
     if entry == None:
 
@@ -174,13 +174,12 @@ def addAirportCity(analyzer, city):
 
         value = newCity()
         m.put(city_id_map, city['city'], value)
-        value = me.getValue()
 
     else: 
 
         value = me.getValue(citynamentry)
 
-    lt.addLast(value['ID'], city['id'])
+    lt.addLast(value['ID'], city)
     
     return analyzer
 
@@ -245,24 +244,29 @@ def harvesineDistance(lat1, lat2, lon1, lon2):
 
 def getCities(analyzer, name):
 
-    entry = m.get(analyzer['CITIES-ID'], name)
+    entry = m.get(analyzer['Cities-ID'], name)
     value = me.getValue(entry)
 
     return value['ID']
 
 def getcluster(analyzer):
 
-    cluster_info = scc.KosarajuSCC(analyzer['AirportRoutesD'])
+    cluster = scc.KosarajuSCC(analyzer['AirportRoutesD'])
 
-    return cluster_info
+    return cluster
 
-def getTraficClusters(cluster, IATA1,IATA2):
+def getClusterNum(cluster):
 
     cluster_num = scc.connectedComponents(cluster)
 
+    return cluster_num
+
+
+def getTraficClustersCon(cluster, IATA1,IATA2):
+
     airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
 
-    return cluster_num, airports_connected
+    return airports_connected
 
 def getAffectedAirports(analyzer, IATA):
 

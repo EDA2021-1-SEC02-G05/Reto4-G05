@@ -96,9 +96,13 @@ def getcluster(analyzer):
 
     return model.getcluster(analyzer)
 
-def getTraficClusters(cluster, IATA1,IATA2):
+def getClusterNum(cluster):
 
-    return model.getTraficClusters(cluster, IATA1,IATA2)
+    return model.getClusterNum(cluster)
+
+def getTraficClustersCon(cluster, IATA1,IATA2):
+
+    return model.getTraficClustersCon(cluster, IATA1,IATA2)
 
 
 def getAffectedAirports(analyzer, IATA):
