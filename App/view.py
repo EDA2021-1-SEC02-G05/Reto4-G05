@@ -56,7 +56,8 @@ catalog = None
 
 def printReq1(respuesta):
     print("Aeropuertos que sirven como punto de interconexión a más rutas aereas")
-    print("Grafo Dirigido")
+    print("Grafo Dirigido: A continuación se muestra el TOP 10\n")
+
     print(respuesta[0])
     print("------------------------------------------------------")
     print("Grafo No Dirigido")

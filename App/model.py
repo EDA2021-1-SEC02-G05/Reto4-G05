@@ -237,7 +237,7 @@ def getInterconnections(analyzer):
     info_listND = lt.newList("ARRAY_LIST", cmpfunction=compareconnections)
 
     
-    for vertex in vertex_list:
+    for vertex in lt.iterator(vertex_list):
         arocos_llegada = gr.indegree(graph, vertex)
         arcos_salida = gr.outdegree(graph, vertex)
         total_arcos = arocos_llegada + arcos_salida
@@ -245,7 +245,7 @@ def getInterconnections(analyzer):
                 "TotalConnections": total_arcos}
         lt.addLast(info_list, datos)
 
-    for vertex in vertex_listND:
+    for vertex in lt.iterator(vertex_listND):
         total_arcosND = gr.degree(graphND,vertex)
         datos = {"Aeropuerto": vertex, 
                 "TotalConnections": total_arcosND}
