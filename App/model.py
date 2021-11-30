@@ -227,6 +227,7 @@ def harvesineDistance(lat1, lat2, lon1, lon2):
 
 # Funciones de consulta
 
+
 def getInterconnections(analyzer):
     graph = analyzer['AirportRoutesD']
     vertex_list = gr.vertices(graph) 
