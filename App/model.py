@@ -25,16 +25,17 @@
  """
 
 
+
+
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
+from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
 from math import radians, cos, sin, asin, sqrt
-from DISClib.DataStructures import mapentry as me
-
 assert config
 
 
@@ -64,7 +65,8 @@ def newAnalyzer():
                     'CitiesMapInfo': None,
                     'Cities_lst':None,
                     'AirpotsInterconnected':None,
-                    'AirpotsInterconnectedND':None
+                    'AirpotsInterconnectedND':None,
+                    'Cities-ID': None
                     }
         analyzer['AirportIATAS'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
@@ -94,6 +96,10 @@ def newAnalyzer():
         analyzer["AirpotsInterconnected"] = lt.newList('ARRAY_LIST')
         analyzer["AirpotsInterconnectedND"] = lt.newList('ARRAY_LIST')
 
+        analyzer['Cities-ID'] = m.newMap(numelements=5000,
+                                     maptype='PROBING',
+                                     comparefunction=compareCityName)
+
 
         return analyzer
         
@@ -110,12 +116,12 @@ def addAirportVertex(analyzer, airport):
 
     entry = m.get(map, airport['IATA'])
 
+    if entry is None:
+        m.put(map, airport['IATA'], airport)
+
     if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
         gr.insertVertex(analyzer['AirportRoutesD'], airport1)
 
-
-    if entry is None:
-        m.put(map, airport['IATA'], airport)
 
     return analyzer
 
@@ -139,44 +145,58 @@ def addAirportConnection(analyzer, route):
     distance = float(route['distance_km'])
     distance = abs(distance)
     addConnection(analyzer['AirportRoutesD'], origin, destination, distance)
-
     addAirportNDConnection(analyzer,origin,destination,distance)
 
 def addAirportNDConnection(analyzer,origin,destination,distance): 
+
     arco_origin = gr.getEdge(analyzer['AirportRoutesD'],origin,destination)
     arco_destination = gr.getEdge(analyzer['AirportRoutesD'],destination,origin)
 
     if arco_origin != None and arco_destination != None:
-        addAirportVertexND(analyzer, origin, destination)
+        if not gr.containsVertex(analyzer['AirportRoutesND'], origin):
+            gr.insertVertex(analyzer['AirportRoutesND'], origin)
+
+        if not gr.containsVertex(analyzer['AirportRoutesND'], destination):
+            gr.insertVertex(analyzer['AirportRoutesND'], destination)
 
         addConnection(analyzer['AirportRoutesND'], origin, destination, distance)
 
     
     return analyzer
 
-def addAirportVertexND(analyzer, origin, destination):
-    if not gr.containsVertex(analyzer['AirportRoutesND'], origin):
-        gr.insertVertex(analyzer['AirportRoutesND'], origin)
-
-    if not gr.containsVertex(analyzer['AirportRoutesND'], destination):
-        gr.insertVertex(analyzer['AirportRoutesND'], destination)
-
-
 def addAirportCity(analyzer, city):
 
-    city_lst = analyzer['Cities_lst']
-
-    lt.addLast(city_lst,city)
-
     city_map = analyzer['CitiesMapInfo']
+    city_id_map = analyzer['Cities-ID']
 
-    entry = m.get(city_map,city['city'])
+    entry = m.get(city_map,int(city['id']))
 
     if entry == None:
 
-        m.put(city_map, city['city'], city)
+        m.put(city_map, int(city['id']), city)
 
+    lt.addLast(analyzer['Cities_lst'], city)
+
+    citynamentry = m.get(city_id_map,city['city'])
+
+    if citynamentry == None:
+
+        value = newCity()
+        m.put(city_id_map, city['city'], value)
+
+    else: 
+
+        value = me.getValue(citynamentry)
+
+    lt.addLast(value['ID'], city)
+    
     return analyzer
+
+def newCity():
+
+    city = {'ID':lt.newList('ARRAY_LIST', cmpID)}   
+
+    return city
 
 def addConnection(graph, origin, destination, distance):
 
@@ -252,6 +272,7 @@ def harvesineDistance(lat1, lat2, lon1, lon2):
     return c * R
 
 
+
 # Funciones de consulta
 
 
@@ -262,6 +283,12 @@ def getInterconnections(analyzer):
     
     return info_list, info_listND
 
+def getCities(analyzer, name):
+
+    entry = m.get(analyzer['Cities-ID'], name)
+    value = me.getValue(entry)
+
+    return value['ID']
 
 def getcluster(analyzer):
 
@@ -290,17 +317,20 @@ def getAffectedAirports(analyzer, IATA):
 
     return adj, size
 
-def getCities(analyzer, name):
-
-    entry = m.get(analyzer['Cities-ID'], name)
-    value = me.getValue(entry)
-
-    return value['ID']
-
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareAirport():
      pass
+
+def compareCityName(name, key):
+
+    namekey = key['key']
+    if (name == namekey):
+        return 0
+    elif (name > namekey):
+        return 1
+    else:
+        return -1
 
 def compareAirportIATA(IATA, keyvalue):
     """
@@ -325,8 +355,15 @@ def compareroutes(route1, route2):
     else:
         return -1
 
+def cmpID(ID1, ID2):
+
+    if (ID1 == ID2):
+        return 0
+    else:
+        return -1
+
 def compareconnections():
     pass
 
-
 # Funciones de ordenamiento
+
