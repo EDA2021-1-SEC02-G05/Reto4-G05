@@ -62,7 +62,8 @@ def newAnalyzer():
                     'AirportRoutesND': None,
                     'AirportCities': None,
                     'CitiesMapInfo': None,
-                    'Cities_lst':None
+                    'Cities_lst':None,
+                    'Cities-ID': None
                     }
         analyzer['AirportIATAS'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
@@ -88,6 +89,11 @@ def newAnalyzer():
         analyzer['CitiesMapInfo'] = m.newMap(numelements=5000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
+
+        analyzer['Cities-ID'] = m.newMap(numelements=5000,
+                                     maptype='PROBING',
+                                     comparefunction=compareCityName)
+
         #proximamente...
         #analyzer["AirpotsInterconnected"] = lt.newList('ARRAY_LIST',comparefunction=compareAirportIATA)
         #analyzer["AirpotsInterconnectedND"] = lt.newList('ARRAY_LIST',comparefunction=compareAirportIATA)
