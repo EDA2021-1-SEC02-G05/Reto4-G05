@@ -298,7 +298,15 @@ def getCities(analyzer, name):
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareAirport():
      pass
+def compareCityName(name, key):
 
+    namekey = key['key']
+    if (name == namekey):
+        return 0
+    elif (name > namekey):
+        return 1
+    else:
+        return -1
 def compareAirportIATA(IATA, keyvalue):
     """
     Compara dos aeropuertos
