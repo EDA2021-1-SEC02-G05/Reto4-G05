@@ -52,6 +52,7 @@ def loadData(analyzer):
     loadAirport(analyzer)
     loadRoutes(analyzer)
     loadCities(analyzer)
+    loadInterconnections(analyzer)
 
     return analyzer
 
@@ -84,6 +85,11 @@ def loadCities(analyzer):
     for city in input_file:
 
         model.addAirportCity(analyzer, city)
+
+def loadInterconnections(analyzer):
+    model.addInterconnections(analyzer)
+    model.addInterconnectionsND(analyzer)
+
 
 
 # Funciones para la carga de datos
