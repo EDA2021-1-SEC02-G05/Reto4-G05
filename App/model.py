@@ -63,6 +63,9 @@ def newAnalyzer():
                     'AirportRoutesND': None,
                     'AirportCities': None,
                     'CitiesMapInfo': None,
+                    'Cities_lst':None,
+                    'AirpotsInterconnected':None,
+                    'AirpotsInterconnectedND':None,
                     'Cities-ID': None
                     }
         analyzer['AirportIATAS'] = m.newMap(numelements=14000,
@@ -89,6 +92,9 @@ def newAnalyzer():
         analyzer['CitiesMapInfo'] = m.newMap(numelements=5000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
+        
+        analyzer["AirpotsInterconnected"] = lt.newList('ARRAY_LIST', cmpfunction= compareinterconections)
+        analyzer["AirpotsInterconnectedND"] = lt.newList('ARRAY_LIST', cmpfunction= compareinterconections)
 
         analyzer['Cities-ID'] = m.newMap(numelements=5000,
                                      maptype='PROBING',
@@ -96,6 +102,7 @@ def newAnalyzer():
 
 
         return analyzer
+        
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
 
@@ -203,6 +210,30 @@ def addConnection(graph, origin, destination, distance):
 
     return graph
 
+def addInterconnections(analyzer):
+    graph = analyzer['AirportRoutesD']
+    vertex_list = gr.vertices(graph) 
+    #info_list = analyzer["AirpotsInterconnected"]
+
+    for vertex in lt.iterator(vertex_list):
+        arocos_llegada = gr.indegree(graph, vertex)
+        arcos_salida = gr.outdegree(graph, vertex)
+        total_arcos = arocos_llegada + arcos_salida
+        datos = {"Aeropuerto": vertex, 
+                "TotalConnections": total_arcos}
+        lt.addLast(analyzer["AirpotsInterconnected"], datos)
+
+def addInterconnectionsND(analyzer):
+    graphND = analyzer['AirportRoutesND']
+    vertex_listND = gr.vertices(graphND) 
+    #info_listND = ["AirpotsInterconnectedND"]
+
+    for vertex in lt.iterator(vertex_listND):
+        total_arcosND = gr.degree(graphND,vertex)
+        datos = {"Aeropuerto": vertex, 
+                "TotalConnections": total_arcosND}
+        lt.addLast(analyzer["AirpotsInterconnectedND"], datos)
+
 
 # Funciones para creacion de datos
 
@@ -244,30 +275,12 @@ def harvesineDistance(lat1, lat2, lon1, lon2):
 
 # Funciones de consulta
 
+
 def getInterconnections(analyzer):
-    graph = analyzer['AirportRoutesD']
-    vertex_list = gr.vertices(graph) 
-    info_list = lt.newList("ARRAY_LIST", cmpfunction=compareconnections)
-
-    graphND = analyzer['AirportRoutesND']
-    vertex_listND = gr.vertices(graphND) 
-    info_listND = lt.newList("ARRAY_LIST", cmpfunction=compareconnections)
-
     
-    for vertex in lt.iterator(vertex_list):
-        arocos_llegada = gr.indegree(graph, vertex)
-        arcos_salida = gr.outdegree(graph, vertex)
-        total_arcos = arocos_llegada + arcos_salida
-        datos = {"Aeropuerto": vertex, 
-                "TotalConnections": total_arcos}
-        lt.addLast(info_list, datos)
-
-    for vertex in lt.iterator(vertex_listND):
-        total_arcosND = gr.degree(graphND,vertex)
-        datos = {"Aeropuerto": vertex, 
-                "TotalConnections": total_arcosND}
-        lt.addLast(info_listND, datos)
-
+    info_list = analyzer['AirpotsInterconnected']
+    info_listND = analyzer['AirpotsInterconnectedND']
+    
     return info_list, info_listND
 
 def getCities(analyzer, name):
@@ -370,8 +383,13 @@ def cmpID(ID1, ID2):
     else:
         return -1
 
-def compareconnections():
-    pass
+def compareinterconections(dict1, dict2):
+    if (dict1["Aeropuerto"] == dict2["Aeropuerto"]):
+        return 0
+    elif (dict1["Aeropuerto"] > dict2["Aeropuerto"]):
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento
 

@@ -62,6 +62,8 @@ def printReq1(respuesta):
     print("------------------------------------------------------")
     print("Grafo No Dirigido")
     print(respuesta[1])
+    #print(lt.isPresent(respuesta[1],{'Aeropuerto': 'VLD', 'TotalConnections': 1}))
+    #print(lt.getElement(respuesta[1],3291))
 
 def printReq2(total_clusters, aeropuertos_mismo, IATA1, IATA2):
 
