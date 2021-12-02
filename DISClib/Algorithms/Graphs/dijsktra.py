@@ -24,7 +24,6 @@
  *
  """
 
-
 import config
 from DISClib.DataStructures import edge as e
 from DISClib.ADT import list as lt

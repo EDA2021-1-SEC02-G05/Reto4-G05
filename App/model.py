@@ -296,6 +296,27 @@ def getTraficClustersCon(cluster, IATA1,IATA2):
 
     return airports_connected
 
+def ClosestairportCity():
+    pass
+
+def DijkstraAirport(analyzer, airport):
+
+    shortest_routes = djk.Dijkstra(analyzer['AirportRoutesD'], airport)
+
+    return shortest_routes
+
+
+def getShortestRoute(dijkstra, airport2):
+
+    if djk.hasPathTo(dijkstra,airport2):
+
+        dijk_route = djk.pathTo(dijkstra,airport2)
+
+        dist_total = djk.distTo(dijkstra, airport2)
+
+        return dijk_route,dist_total
+
+
 def getAffectedAirports(analyzer, IATA):
 
     adj = gr.adjacents(analyzer['AirportRoutesD'],IATA)
