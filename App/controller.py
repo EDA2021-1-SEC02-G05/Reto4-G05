@@ -58,7 +58,7 @@ def loadData(analyzer):
 
 def loadAirport(analyzer):
 
-    airportfile = cf.data_dir + '/Skylines/airports_full.csv'
+    airportfile = cf.data_dir + '/Skylines/airports-utf8-small.csv'
     input_file = csv.DictReader(open(airportfile, encoding="utf-8"),
                                 delimiter=",")
 
@@ -69,7 +69,7 @@ def loadAirport(analyzer):
 
 def loadRoutes(analyzer):
 
-    routesfile = cf.data_dir + '/Skylines/routes_full.csv'
+    routesfile = cf.data_dir + '/Skylines/routes-utf8-small.csv'
     input_file = csv.DictReader(open(routesfile, encoding="utf-8"),
                                 delimiter=",")
     for route in input_file:

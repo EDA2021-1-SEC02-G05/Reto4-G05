@@ -137,14 +137,14 @@ def thread_cycle():
 
             #grafo no dirigido
 
-            print('\n A continuación se muestra la información del primer aeropuerto cargado para el grafo dirigido y no dirigido respectivamente: \n')
+            print('\nA continuación se muestra la información del primer aeropuerto cargado para el grafo dirigido y no dirigido respectivamente: \n')
             print('Nombre: ' + airport_infoD['value']['Name'] + ', Ciudad: ' + airport_infoD['value']['City'] + ', Pais: ' + airport_infoD['value']['Country'] + ', Latitud: ' + airport_infoD['value']['Latitude'] + ', Longitud: ' + airport_infoD['value']['Longitude'] )
             
             #grafo no dirigido
 
             city_last = lt.getElement(analyzer['Cities_lst'], num_ciudades)
 
-            print('\n A continuación se muestra la información de la última ciudad cargada: \n')
+            print('\nA continuación se muestra la información de la última ciudad cargada: \n')
 
             print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng'])
 

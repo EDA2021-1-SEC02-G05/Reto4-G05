@@ -35,6 +35,7 @@ from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from DISClib.Algorithms.Sorting import mergesort as ms
 from math import radians, cos, sin, asin, sqrt
 assert config
 
@@ -122,6 +123,8 @@ def addAirportVertex(analyzer, airport):
     if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
         gr.insertVertex(analyzer['AirportRoutesD'], airport1)
 
+    if not gr.containsVertex(analyzer['AirportRoutesND'], airport1):
+            gr.insertVertex(analyzer['AirportRoutesND'], airport1)
 
     return analyzer
 
@@ -153,11 +156,6 @@ def addAirportNDConnection(analyzer,origin,destination,distance):
     arco_destination = gr.getEdge(analyzer['AirportRoutesD'],destination,origin)
 
     if arco_origin != None and arco_destination != None:
-        if not gr.containsVertex(analyzer['AirportRoutesND'], origin):
-            gr.insertVertex(analyzer['AirportRoutesND'], origin)
-
-        if not gr.containsVertex(analyzer['AirportRoutesND'], destination):
-            gr.insertVertex(analyzer['AirportRoutesND'], destination)
 
         addConnection(analyzer['AirportRoutesND'], origin, destination, distance)
 
@@ -223,6 +221,9 @@ def addInterconnections(analyzer):
                 "TotalConnections": total_arcos}
         lt.addLast(analyzer["AirpotsInterconnected"], datos)
 
+    sortInterconnected(analyzer["AirpotsInterconnected"])
+    
+
 def addInterconnectionsND(analyzer):
     graphND = analyzer['AirportRoutesND']
     vertex_listND = gr.vertices(graphND) 
@@ -233,6 +234,8 @@ def addInterconnectionsND(analyzer):
         datos = {"Aeropuerto": vertex, 
                 "TotalConnections": total_arcosND}
         lt.addLast(analyzer["AirpotsInterconnectedND"], datos)
+
+    sortInterconnected(analyzer["AirpotsInterconnectedND"])
 
 
 # Funciones para creacion de datos
@@ -392,5 +395,12 @@ def compareinterconections(dict1, dict2):
     else:
         return -1
 
+def cmpconnections(con1,con2):
+
+    return con1['TotalConnections'] > con2['TotalConnections']
+
 # Funciones de ordenamiento
 
+def sortInterconnected(interconnected):
+
+    ms.sort(interconnected, cmpconnections)
