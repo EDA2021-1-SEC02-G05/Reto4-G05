@@ -67,11 +67,14 @@ def newAnalyzer():
                     'Cities_lst':None,
                     'AirpotsInterconnected':None,
                     'AirpotsInterconnectedND':None,
-                    'Cities-ID': None
+                    'Cities-ID': None,
+                    'Cities-Airport':None
                     }
         analyzer['AirportIATAS'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
+
+        analyzer['airport_lst'] = lt.newList('ARRAY_LIST')
 
         analyzer['AirportRoutesD'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
@@ -90,14 +93,19 @@ def newAnalyzer():
 
         analyzer['Cities_lst'] = lt.newList('ARRAY_LIST')
 
-        analyzer['CitiesMapInfo'] = m.newMap(numelements=5000,
+        analyzer['CitiesMapInfo'] = m.newMap(numelements=42000,
+                                     maptype='PROBING',
+                                     comparefunction=compareAirportIATA)
+
+
+        analyzer['Cities-Airport'] = m.newMap(numelements=42000,
                                      maptype='PROBING',
                                      comparefunction=compareAirportIATA)
         
         analyzer["AirpotsInterconnected"] = lt.newList('ARRAY_LIST', cmpfunction= compareinterconections)
         analyzer["AirpotsInterconnectedND"] = lt.newList('ARRAY_LIST', cmpfunction= compareinterconections)
 
-        analyzer['Cities-ID'] = m.newMap(numelements=5000,
+        analyzer['Cities-ID'] = m.newMap(numelements=42000,
                                      maptype='PROBING',
                                      comparefunction=compareCityName)
 
@@ -112,6 +120,8 @@ def newAnalyzer():
 def addAirportVertex(analyzer, airport):
 
     airport1 = formatVertex(airport)
+
+    lt.addLast(analyzer['airport_lst'], airport)
 
     map = analyzer['AirportIATAS']
 
@@ -162,7 +172,7 @@ def addAirportNDConnection(analyzer,origin,destination,distance):
     
     return analyzer
 
-def addAirportCity(analyzer, city):
+def addCity(analyzer, city):
 
     city_map = analyzer['CitiesMapInfo']
     city_id_map = analyzer['Cities-ID']
@@ -195,6 +205,38 @@ def newCity():
     city = {'ID':lt.newList('ARRAY_LIST', cmpID)}   
 
     return city
+
+def addCityAirport(analyzer, city):
+    city_airport_map = analyzer['Cities-Airport']
+
+    entry = m.get(city_airport_map,city['city'])
+
+    if entry == None:
+        value = newcityAirport(analyzer, city)
+        m.put(city_airport_map, city['id'], value)
+    
+    return analyzer
+
+def newcityAirport(analyzer, city):
+    lat1 = float(city['lat'])
+    lon1 = float(city['lng'])
+    menor = 100000000000000
+    menor_airport = None
+
+    for airport in lt.iterator(analyzer['airport_lst']):
+        lat2 = float(airport['Latitude'])
+        lon2 = float(airport['Longitude'])
+
+        distance_city = harvesineDistance(lat1,lat2,lon1,lon2)
+
+        if distance_city < menor:
+
+            menor = distance_city
+            menor_airport = airport['IATA']
+
+    city_airport = {'City': city['city'], 'AirportClosest': menor_airport}
+
+    return city_airport
 
 def addConnection(graph, origin, destination, distance):
 
@@ -313,8 +355,15 @@ def getTraficClustersCon(cluster, IATA1,IATA2):
 
     return airports_connected
 
-def ClosestairportCity():
-    pass
+def ClosestairportCity(analyzer,city_id):
+
+    city_closest_map = analyzer['Cities-Airport']
+    airportentry = m.get(city_closest_map,city_id)
+    airportvalue = me.getValue(airportentry)
+    airportIATA = airportvalue['AirportClosest']
+
+    return airportIATA
+
 
 def DijkstraAirport(analyzer, airport):
 

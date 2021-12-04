@@ -51,8 +51,8 @@ def loadData(analyzer):
     """
     loadAirport(analyzer)
     loadRoutes(analyzer)
-    loadCities(analyzer)
     loadInterconnections(analyzer)
+    loadCities(analyzer)
 
     return analyzer
 
@@ -84,7 +84,8 @@ def loadCities(analyzer):
 
     for city in input_file:
 
-        model.addAirportCity(analyzer, city)
+        model.addCity(analyzer, city)
+        model.addCityAirport(analyzer, city)
 
 def loadInterconnections(analyzer):
     model.addInterconnections(analyzer)
@@ -121,3 +122,15 @@ def getAffectedAirports(analyzer, IATA):
 def getCities(analyzer, name):
 
     return model.getCities(analyzer, name)
+
+def ClosestairportCity(analyzer,city_id):
+
+    return model.ClosestairportCity(analyzer,city_id)
+
+def DijkstraAirport(analyzer, airport):
+
+    return model.DijkstraAirport(analyzer, airport)
+
+def getShortestRoute(dijkstra, airport2):
+
+    return model.getShortestRoute(dijkstra, airport2)
