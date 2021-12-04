@@ -62,7 +62,6 @@ def newAnalyzer():
                     'AirportIATAS': None,
                     'AirportRoutesD': None,
                     'AirportRoutesND': None,
-                    'AirportCities': None,
                     'CitiesMapInfo': None,
                     'Cities_lst':None,
                     'AirpotsInterconnected':None,
@@ -85,12 +84,6 @@ def newAnalyzer():
                                               directed=False,
                                               size=14000,
                                               comparefunction=compareAirportIATA)
-
-        analyzer['AirportCities'] = gr.newGraph(datastructure='ADJ_LIST',
-                                              directed=True,
-                                              size=14000,
-                                              comparefunction=compareAirportIATA)
-
         analyzer['Cities_lst'] = lt.newList('ARRAY_LIST')
 
         analyzer['CitiesMapInfo'] = m.newMap(numelements=42000,
@@ -234,7 +227,7 @@ def newcityAirport(analyzer, city):
             menor = distance_city
             menor_airport = airport['IATA']
 
-    city_airport = {'City': city['city'], 'AirportClosest': menor_airport}
+    city_airport = {'City': city['city'], 'AirportClosest': menor_airport, 'DistanceClosest': menor}
 
     return city_airport
 
