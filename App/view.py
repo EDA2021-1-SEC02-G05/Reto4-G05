@@ -28,6 +28,7 @@ from DISClib.ADT.graph import gr
 import threading
 from DISClib.ADT import map as m
 from DISClib.ADT import stack
+from DISClib.DataStructures import mapentry as me
 assert cf
 
 
@@ -81,6 +82,25 @@ def printReq2(total_clusters, aeropuertos_mismo, IATA1, IATA2):
 
         print('El aeropuerto identificado por el IATA ' + str(IATA1) + ' y el identificado por el IATA ' + str(IATA2) + ' NO pertenecen al mismo cluster.')
 
+def printReq3(analyzer, ruta, distancia_total, aero_origen, aero_destino):
+
+    aero_origen_entry = m.get(analyzer['AirportIATAS'], aero_origen)
+    aero_origen_info = me.getValue(aero_origen_entry)
+    aero_destino_entry = m.get(analyzer['AirportIATAS'], aero_destino)
+    aero_destino_info = me.getValue(aero_destino_entry)
+
+    print('A continuación se muestran los aeropuertos de origen y destino respectivamente y su información: \n')
+
+    print('IATA: ' + aero_origen_info['IATA'] + ', Nombre: ' + aero_origen_info['Name'] + ', Ciudad: ' + aero_origen_info['City'] + ', Pais: ' + aero_origen_info['Country'])
+    print('IATA: ' + aero_destino_info['IATA'] + ', Nombre: ' + aero_destino_info['Name'] + ', Ciudad: ' + aero_destino_info['City'] + ', Pais: ' + aero_destino_info['Country'] + '\n')
+
+    print('La ruta más corta hallada entre ambos aeropuertos es de ' + str(distancia_total) + ' km. \n')
+    print('A continuación se mostrará la ruta tomada con sus respectivas paradas y distancias parciales: \n')
+
+    for trayecto in lt.iterator(ruta):
+        print('Origen: ' + trayecto['vertexA'] + ', Destino: ' + trayecto['vertexB'] + ', Distancia (km): ' + str(trayecto['weight']) + '.')
+
+
 def printReq5(lista, tamano, IATA):
 
     print('Si el aeropuerto identificado con el código IATA ' + str(IATA) + ' se encontrara fuera de servicio, ' + str(tamano) + ' aeropuertos se verían afectados.\n')
@@ -132,7 +152,6 @@ def thread_cycle():
             print('Total de ciudades cargadas: ' + str(num_ciudades) + '\n')
 
             airport_mapa = analyzer['AirportIATAS']
-            city_map = analyzer['CitiesMapInfo']
 
             airportDs = gr.vertices(analyzer['AirportRoutesD'])
             first_airportD = lt.getElement(airportDs, 1)
@@ -148,9 +167,9 @@ def thread_cycle():
 
             city_last = lt.getElement(analyzer['Cities_lst'], num_ciudades)
 
-            print('\nA continuación se muestra la información de la última ciudad cargada: \n')
+            print('\nA continuación se muestra la información de la última ciudad cargada:')
 
-            print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng'])
+            print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng']+'\n')
 
         elif int(inputs[0]) == 3:
 
@@ -176,7 +195,7 @@ def thread_cycle():
 
             'Requerimiento 3: Encontrar la ruta más corta entre ciudades'
 
-            origen = (input('Escoja la ciudad de origen: ')).capitalize()
+            origen = input('Escoja la ciudad de origen: ')
 
             ciudades_o = controller.getCities(analyzer, origen)
 
@@ -188,10 +207,17 @@ def thread_cycle():
 
                     print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
 
-                ciudad_o_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de origen: '))
+                ciudad_o_codigo = input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de origen: ')
 
+            else:
+
+                ciudad_o_codigo = ciudades_o['elements'][0]['id']
+
+            airport_origin = controller.ClosestairportCity(analyzer,ciudad_o_codigo)
+
+            dijkstra_airport = controller.DijkstraAirport(analyzer, airport_origin)
             
-            destino = (input('Escoja la ciudad de destino: ')).capitalize()
+            destino = input('Escoja la ciudad de destino: ')
 
             ciudades_d = controller.getCities(analyzer, destino)
 
@@ -202,10 +228,17 @@ def thread_cycle():
 
                     print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
 
-                ciudad_d_codigo = int(input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de destino: '))
+                ciudad_d_codigo = input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de destino: ')
+            else:
 
+                ciudad_d_codigo = ciudades_d['elements'][0]['id']
 
-            pass
+            airport_destination = controller.ClosestairportCity(analyzer,ciudad_d_codigo)
+
+            respuesta = controller.getShortestRoute(dijkstra_airport, airport_destination)
+
+            printReq3(analyzer, respuesta[0],respuesta[1], airport_origin, airport_destination)
+
 
         elif int(inputs[0]) == 6:
 
