@@ -94,8 +94,11 @@ def printReq3(analyzer, ruta, distancia_total, aero_origen, aero_destino):
     print('A continuación se mostrará la ruta tomada con sus respectivas paradas y distancias parciales: \n')
 
     for trayecto in lt.iterator(ruta):
-        print('Origen: ' + trayecto['vertexA'] + ', Destino: ' + trayecto['vertexB'] + ', Distancia (km): ' + str(trayecto['weight']) + '.')
+        print('Origen: ' + trayecto['vertexA'] + ', Destino: ' + trayecto['vertexB'] + ', Distancia (km): ' + str(trayecto['weight']))
 
+def printReq4():
+
+    pass
 
 def printReq5(lista, tamano, IATA):
 
