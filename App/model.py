@@ -362,7 +362,7 @@ def getClusterNum(cluster):
 
     return cluster_num
 
-def planViajero(analyzer, origen, distancia):
+def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en origen 
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
     tree = mst["mst"]
