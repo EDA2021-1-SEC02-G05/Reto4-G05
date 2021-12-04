@@ -108,9 +108,9 @@ def printReq4(respuesta, origen, millas):
     print("La rama más larga que hace parte del árbol de expansión mínima es: " + str(respuesta[2]))
 
     if respuesta[3] > 0:
-        print("La cantidad de millas faltantes según la distancia total recomendada es: " + str(respuesta[3])+ "\n")
+        print("La cantidad de millas faltantes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
     elif respuesta[3] < 0:
-        print("La cantidad de millas excedentes según la distancia total recomendada es: " + str(respuesta[3])+ "\n")
+        print("La cantidad de millas excedentes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
     elif respuesta[3] == 0:
         print("La cantidad de millas según la distancia total recomendada es exacta"+ "\n")
     
