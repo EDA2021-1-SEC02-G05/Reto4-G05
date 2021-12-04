@@ -27,6 +27,7 @@
 
 
 
+from DISClib.DataStructures.arraylist import getElement
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
@@ -249,11 +250,16 @@ def addInterconnections(analyzer):
     #info_list = analyzer["AirpotsInterconnected"]
 
     for vertex in lt.iterator(vertex_list):
+        info = relateIATA(analyzer, vertex)
         arocos_llegada = gr.indegree(graph, vertex)
         arcos_salida = gr.outdegree(graph, vertex)
         total_arcos = arocos_llegada + arcos_salida
-        datos = {"Aeropuerto": vertex, 
-                "TotalConnections": total_arcos}
+        datos = {"Aeropueto": info["Name"],
+                "IATA": vertex, 
+                "Ciudad": info["City"],
+                "Pais": info["Country"],
+                "TotalConnections": total_arcos,
+                }
         lt.addLast(analyzer["AirpotsInterconnected"], datos)
 
     sortInterconnected(analyzer["AirpotsInterconnected"])
@@ -265,12 +271,25 @@ def addInterconnectionsND(analyzer):
     #info_listND = ["AirpotsInterconnectedND"]
 
     for vertex in lt.iterator(vertex_listND):
+        info = relateIATA(analyzer, vertex)
         total_arcosND = gr.degree(graphND,vertex)
-        datos = {"Aeropuerto": vertex, 
-                "TotalConnections": total_arcosND}
+        datos = {"Aeropueto": info["Name"],
+                "IATA": vertex, 
+                "Ciudad": info["City"],
+                "Pais": info["Country"],
+                "TotalConnections": total_arcosND,
+                }
         lt.addLast(analyzer["AirpotsInterconnectedND"], datos)
 
     sortInterconnected(analyzer["AirpotsInterconnectedND"])
+
+def relateIATA(analyzer, vertex):
+    mapa = analyzer['AirportIATAS']
+    pareja = m.get(mapa, vertex)
+    info = me.getValue(pareja)
+
+    return info
+    
 
 
 # Funciones para creacion de datos
@@ -321,6 +340,7 @@ def getInterconnections(analyzer):
     info_listND = analyzer['AirpotsInterconnectedND']
     
     return info_list, info_listND
+    
 
 def getCities(analyzer, name):
 

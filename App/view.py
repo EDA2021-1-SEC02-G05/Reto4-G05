@@ -57,12 +57,16 @@ catalog = None
 
 def printReq1(respuesta):
     print("Aeropuertos que sirven como punto de interconexión a más rutas aereas")
-    print("Grafo Dirigido: A continuación se muestra el TOP 10\n")
-
-    print(respuesta[0])
-    print("------------------------------------------------------")
-    print("Grafo No Dirigido")
-    print(respuesta[1])
+    print("Grafo Dirigido: A continuación se muestra el TOP 5\n")
+    first5 = lt.subList(respuesta[0],1,5)
+    for i in lt.iterator(first5):
+        print('Aeropuerto: ' + i['Aeropueto'] + ', Ciudad: ' + i['Ciudad'] + ', País: ' + i['Pais'] + ', IATA: ' + i['IATA'] + ', Total Conexiones: ' + str(i['TotalConnections'])  + '\n')
+    
+    
+    print("Grafo No Dirigido: A continuación se muestra el TOP 5\n")
+    first_5 = lt.subList(respuesta[1],1,5)
+    for i in lt.iterator(first_5):
+        print('Aeropuerto: ' + i['Aeropueto'] + ', Ciudad: ' + i['Ciudad'] + ', País: ' + i['Pais'] + ', IATA: ' + i['IATA'] + ', Total Conexiones: ' + str(i['TotalConnections'])  + '\n')
     #print(lt.isPresent(respuesta[1],{'Aeropuerto': 'VLD', 'TotalConnections': 1}))
     #print(lt.getElement(respuesta[1],3291))
 
