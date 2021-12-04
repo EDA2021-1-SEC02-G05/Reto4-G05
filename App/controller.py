@@ -131,6 +131,10 @@ def DijkstraAirport(analyzer, airport):
 
     return model.DijkstraAirport(analyzer, airport)
 
+def planViajero(analyzer, origen, distancia):
+    
+    return model.planViajero(analyzer, origen, distancia)
+
 def getShortestRoute(dijkstra, airport2):
 
     return model.getShortestRoute(dijkstra, airport2)
