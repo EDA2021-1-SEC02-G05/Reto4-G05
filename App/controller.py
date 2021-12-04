@@ -78,7 +78,7 @@ def loadRoutes(analyzer):
 
 def loadCities(analyzer):
 
-    citiesfile = cf.data_dir + '/Skylines/worldcities.csv'
+    citiesfile = cf.data_dir + '/Skylines/worldcities-utf8.csv'
     input_file = csv.DictReader(open(citiesfile, encoding="utf-8"),
                                 delimiter=",")
 
