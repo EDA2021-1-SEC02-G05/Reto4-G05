@@ -35,6 +35,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim as prim
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as ms
 from math import radians, cos, sin, asin, sqrt
@@ -362,6 +363,16 @@ def getClusterNum(cluster):
 
     return cluster_num
 
+def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en origen 
+    graphND = analyzer['AirportRoutesND']
+    mst = prim.PrimMST(graphND)
+    tree = mst["mst"]
+    nodesConnected = tree["size"]
+    weight = prim.weightMST(graphND, mst)
+    largestBranch = "..."
+    km_milles = weight - distancia
+
+    return nodesConnected, weight, largestBranch, km_milles
 
 def getTraficClustersCon(cluster, IATA1,IATA2):
 
@@ -471,6 +482,7 @@ def compareinterconections(dict1, dict2):
 def cmpconnections(con1,con2):
 
     return con1['TotalConnections'] > con2['TotalConnections']
+
 
 # Funciones de ordenamiento
 

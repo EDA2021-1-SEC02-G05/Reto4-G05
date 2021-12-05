@@ -102,7 +102,21 @@ def printReq3(analyzer, ruta, distancia_total, aero_origen, aero_destino):
     for trayecto in lt.iterator(ruta):
         print('Origen: ' + trayecto['vertexA'] + ', Destino: ' + trayecto['vertexB'] + ', Distancia (km): ' + str(trayecto['weight']))
 
-def printReq4():
+def printReq4(respuesta, origen, millas):
+
+    print("Dado la ciudad de origen " + origen+ " y un total de "+str(millas)+ " millas. Se encontró que: \n")
+    print("El número de nodos conectados al arbol de expansión minima es: " + str(respuesta[0]))
+    print("El costo total (distancia en [km]) al árbol de expansión mínima es: " + str(respuesta[1]))
+    print("La rama más larga que hace parte del árbol de expansión mínima es: " + str(respuesta[2]))
+
+    if respuesta[3] > 0:
+        print("La cantidad de millas faltantes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
+    elif respuesta[3] < 0:
+        print("La cantidad de millas excedentes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
+    elif respuesta[3] == 0:
+        print("La cantidad de millas según la distancia total recomendada es exacta"+ "\n")
+    
+#excedentes
 
     pass
 
@@ -270,7 +284,14 @@ def thread_cycle():
         elif int(inputs[0]) == 6:
 
             'Requerimiento 4: Utilizar las millas de viajero'
-            pass
+            
+            origen= input("Ingrese la ciudad de origen: ")
+            millas = int(input("Ingrese cantidad millas disponibes: "))
+            distancia = millas*1.6
+            respuesta = controller.planViajero(analyzer, origen, distancia)
+
+            printReq4(respuesta, origen, millas)
+
 
         elif int(inputs[0]) == 7:
 
