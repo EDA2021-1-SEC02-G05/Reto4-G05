@@ -366,10 +366,16 @@ def getClusterNum(cluster):
 def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en origen 
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
+
+    mst_or = prim.prim(graphND,mst,origen)
+
+    print(mst)
     tree = mst["mst"]
+
+
     nodesConnected = tree["size"]
     weight = prim.weightMST(graphND, mst)
-    largestBranch = "..."
+    largestBranch = nodesConnected - 1
     km_milles = weight - distancia
 
     return nodesConnected, weight, largestBranch, km_milles

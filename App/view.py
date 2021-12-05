@@ -286,7 +286,7 @@ def thread_cycle():
             'Requerimiento 4: Utilizar las millas de viajero'
             
             origen= input("Ingrese la ciudad de origen: ")
-            millas = int(input("Ingrese cantidad millas disponibes: "))
+            millas = int(input("Ingrese cantidad millas disponibles: "))
             distancia = millas*1.6
             respuesta = controller.planViajero(analyzer, origen, distancia)
 
