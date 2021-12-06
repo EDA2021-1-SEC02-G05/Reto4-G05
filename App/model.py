@@ -366,10 +366,12 @@ def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
     tree = mst["mst"]
-    nodesConnected = tree["size"]
     weight = prim.weightMST(graphND, mst)
-    largestBranch = "..."
+    nodesConnected = tree['size']
+    largestBranch = tree
     km_milles = weight - distancia
+    #xd = prim.prim(graphND, mst, origen)
+    #xd = xd["mst"]
 
     return nodesConnected, weight, largestBranch, km_milles
 
