@@ -27,7 +27,7 @@
 
 
 
-import requests
+#import requests
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
