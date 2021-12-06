@@ -138,3 +138,7 @@ def planViajero(analyzer, origen, distancia):
 def getShortestRoute(dijkstra, airport2):
 
     return model.getShortestRoute(dijkstra, airport2)
+
+def Req6City(city, analyzer):
+
+    return model.Req6City(city, analyzer)

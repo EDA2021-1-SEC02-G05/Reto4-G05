@@ -27,7 +27,7 @@
 
 
 
-from DISClib.DataStructures.arraylist import getElement
+import requests
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
@@ -73,7 +73,7 @@ def newAnalyzer():
                     }
         analyzer['AirportIATAS'] = m.newMap(numelements=14000,
                                      maptype='PROBING',
-                                     comparefunction=compareAirportIATA)
+                                     comparefunction=compareAirportIATA) #Relaciona el código IATA de un aeropuerto con su información
 
         analyzer['airport_lst'] = lt.newList('ARRAY_LIST')
 
@@ -85,24 +85,25 @@ def newAnalyzer():
         analyzer['AirportRoutesND'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=False,
                                               size=14000,
-                                              comparefunction=compareAirportIATA)
-        analyzer['Cities_lst'] = lt.newList('ARRAY_LIST')
+                                              comparefunction=compareAirportIATA) #tiene unicamente interconexiones entre aeropuertos con vuelos de ida y regreso
+        analyzer['Cities_lst'] = lt.newList('ARRAY_LIST') #contiene todas las ciudades
 
         analyzer['CitiesMapInfo'] = m.newMap(numelements=42000,
                                      maptype='PROBING',
-                                     comparefunction=compareAirportIATA)
+                                     comparefunction=compareAirportIATA) #Relaciona el id de una ciudad con su información
 
 
         analyzer['Cities-Airport'] = m.newMap(numelements=42000,
                                      maptype='PROBING',
-                                     comparefunction=compareAirportIATA)
+                                     comparefunction=compareAirportIATA)#Relaciona una ciudad con el codigo IATA del aeropuerto más cercano a ella
+
         
         analyzer["AirpotsInterconnected"] = lt.newList('ARRAY_LIST', cmpfunction= compareinterconections)
         analyzer["AirpotsInterconnectedND"] = lt.newList('ARRAY_LIST', cmpfunction= compareinterconections)
 
         analyzer['Cities-ID'] = m.newMap(numelements=42000,
                                      maptype='PROBING',
-                                     comparefunction=compareCityName)
+                                     comparefunction=compareCityName) #Relaciona nombres de ciudades con su numero id
 
 
         return analyzer
@@ -172,11 +173,11 @@ def addCity(analyzer, city):
     city_map = analyzer['CitiesMapInfo']
     city_id_map = analyzer['Cities-ID']
 
-    entry = m.get(city_map,int(city['id']))
+    entry = m.get(city_map,city['id'])
 
     if entry == None:
 
-        m.put(city_map, int(city['id']), city)
+        m.put(city_map, city['id'], city)
 
     lt.addLast(analyzer['Cities_lst'], city)
 
@@ -365,6 +366,10 @@ def getClusterNum(cluster):
 def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en origen 
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
+
+    mst_or = prim.prim(graphND,mst,origen)
+
+    print(mst)
     tree = mst["mst"]
     weight = prim.weightMST(graphND, mst)
     nodesConnected = tree['size']
@@ -412,10 +417,20 @@ def getShortestRoute(dijkstra, airport2):
 def getAffectedAirports(analyzer, IATA):
 
     adj = gr.adjacents(analyzer['AirportRoutesD'],IATA)
-
     size = lt.size(adj)
 
-    return adj, size
+    return  adj, size
+
+def Req6City(citycode, analyzer):
+
+    entryinfo = m.get(analyzer['CitiesMapInfo'], citycode)
+
+    value = me.getValue(entryinfo)
+
+    lat = value['lat']
+    lon = value['lng']
+
+    return lat, lon
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

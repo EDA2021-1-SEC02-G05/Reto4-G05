@@ -23,6 +23,8 @@
 import config as cf
 import sys
 import controller
+import queryAPI
+import getAccessToken
 from DISClib.ADT import list as lt
 from DISClib.ADT.graph import gr
 import threading
@@ -98,7 +100,7 @@ def printReq3(analyzer, ruta, distancia_total, aero_origen, aero_destino):
     print('A continuación se mostrará la ruta tomada con sus respectivas paradas y distancias parciales: \n')
 
     for trayecto in lt.iterator(ruta):
-        print('Origen: ' + trayecto['vertexA'] + ', Destino: ' + trayecto['vertexB'] + ', Distancia (km): ' + str(trayecto['weight']) + '.')
+        print('Origen: ' + trayecto['vertexA'] + ', Destino: ' + trayecto['vertexB'] + ', Distancia (km): ' + str(trayecto['weight']))
 
 def printReq4(respuesta, origen, millas):
 
@@ -118,15 +120,39 @@ def printReq4(respuesta, origen, millas):
     
 #excedentes
 
-def printReq5(lista, tamano, IATA):
+    pass
+
+def printReq5(analyzer, lista, tamano, IATA):
 
     print('Si el aeropuerto identificado con el código IATA ' + str(IATA) + ' se encontrara fuera de servicio, ' + str(tamano) + ' aeropuertos se verían afectados.\n')
 
     print('A continuación se presenta la lista de aeropuertos que se verían afectados: ')
 
-    for aero in lt.iterator(lista):
+    if tamano > 6:
+        first3 = lt.subList(list, 1, 3)
+        last3 = lt.subList(list, tamano-2 , 3)
 
-        print(aero)
+        for airport in lt.iterator(first3):
+            entry = m.get(analyzer['AirportIATAS'], airport)
+            value = me.getValue(entry)
+            print('Nombre: ' + value['Name'] + ', Ciudad: ' + value['City'] + ', IATA: ' + value['IATA'])
+
+        for airport in lt.iterator(last3):
+            entry = m.get(analyzer['AirportIATAS'], airport)
+            value = me.getValue(entry)
+
+            print('Nombre: ' + value['Name'] + ', Ciudad: ' + value['City'] + ', IATA: ' + value['IATA'])
+
+    else:
+        
+        for airport in lt.iterator(lista):
+            entry = m.get(analyzer['AirportIATAS'], airport)
+            value = me.getValue(entry)
+
+            print('Nombre: ' + value['Name'] + ', Ciudad: ' + value['City'] + ', IATA: ' + value['IATA'])
+
+    print('\n')
+
 
 """
 Menu principal
@@ -262,7 +288,7 @@ def thread_cycle():
             'Requerimiento 4: Utilizar las millas de viajero'
             
             origen= input("Ingrese la ciudad de origen: ")
-            millas = int(input("Ingrese cantidad millas disponibes: "))
+            millas = int(input("Ingrese cantidad millas disponibles: "))
             distancia = millas*1.6
             respuesta = controller.planViajero(analyzer, origen, distancia)
 
@@ -277,12 +303,67 @@ def thread_cycle():
 
             afectados = controller.getAffectedAirports(analyzer, IATA)
 
-            printReq5(afectados[0], afectados[1], IATA)
+            printReq5(analyzer, afectados[0], afectados[1], IATA)
 
         elif int(inputs[0]) == 8:
+
+            'Requerimiento 6: Comparar con servicio WEB externo'
+
+            getAccessToken.accestoken()
+
+            city_origin = input('Ingrese la ciudad de origen que desea: ')
+
+            ciudades_o = controller.getCities(analyzer, city_origin)
+
+            if lt.size(ciudades_o) > 1:
+
+                print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
+
+                for ciudad in lt.iterator(ciudades_o):
+
+                    print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
+
+                ciudad_o_codigo = input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de origen: ')
+
+            else:
+
+                ciudad_o_codigo = ciudades_o['elements'][0]['id']
+
+            origen_latsylons = controller.Req6City(ciudad_o_codigo, analyzer)
+
+            print(origen_latsylons)
+
+            token = input('Ingrese el access token: ')
+
+            airport_origin = queryAPI.Req6ClosestAirport( token,origen_latsylons[0], origen_latsylons[1])
+
+            city_destiny = input('Ingrese ciudad de destino que desea: ')
+
+            ciudades_d = controller.getCities(analyzer, city_destiny)
+
+            if lt.size(ciudades_d) > 1:
+
+                print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
+                for ciudad in lt.iterator(ciudades_d):
+
+                    print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
+
+                ciudad_d_codigo = input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de destino: ')
+            else:
+
+                ciudad_d_codigo = ciudades_d['elements'][0]['id']
+
+            destination_latsylons = controller.Req6City(ciudad_d_codigo, analyzer)
+
+            print(destination_latsylons)
+
+            airport_destination = queryAPI.Req6ClosestAirport(token,destination_latsylons[0], destination_latsylons[1])
+
             pass
 
         elif int(inputs[0]) == 9:
+
+            'Bono: Visualizar gráficamente los requerimientos'
             pass
 
         elif int(inputs[0]) == 0:
