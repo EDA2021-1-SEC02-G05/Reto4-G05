@@ -29,15 +29,17 @@
 
 #import requests
 import config
-from DISClib.ADT.graph import gr
+from DISClib.ADT.graph import gr, vertices
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Algorithms.Graphs import prim as prim
+from DISClib.Algorithms.Graphs import dfs as dfs
 from DISClib.Utils import error as error
 from DISClib.Algorithms.Sorting import mergesort as ms
+from DISClib.ADT import orderedmap as om
 from math import radians, cos, sin, asin, sqrt
 assert config
 
@@ -363,22 +365,42 @@ def getClusterNum(cluster):
 
     return cluster_num
 
-def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en origen 
+
+def planViajero(analyzer, origen, distancia): 
+    lista = lt.newList('ARRAY_LIST')
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
-
-    mst_or = prim.prim(graphND,mst,origen)
-
-    print(mst)
-    tree = mst["mst"]
+    tree = mst["mst"]    
+    
     weight = prim.weightMST(graphND, mst)
     nodesConnected = tree['size']
-    largestBranch = tree
+    #for i in range(nodesConnected):
+    raiz = tree['first']["info"]["vertexA"]
+    a = []
+    for i in lt.iterator(tree):
+        nodo = i['vertexA']
+        nodo2 = i['vertexB']
+        if (nodo not in a):
+            a.append(nodo)
+        if (nodo2 not in a):
+            a.append(nodo2)
+    print(a)
+
+    
+    
+    ruta = dfs.DepthFirstSearch(graphND, origen)
+    for i in a:
+        path = dfs.pathTo(ruta, i)
+        print(path)
+
+    elementos = tree['first']
+    largestBranch = raiz,tree
     km_milles = weight - distancia
-    #xd = prim.prim(graphND, mst, origen)
-    #xd = xd["mst"]
+    
+
 
     return nodesConnected, weight, largestBranch, km_milles
+
 
 def getTraficClustersCon(cluster, IATA1,IATA2):
 
