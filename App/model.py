@@ -368,6 +368,12 @@ def getClusterNum(cluster):
 
     return cluster_num
 
+def getTraficClustersCon(cluster, IATA1,IATA2):
+
+    airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
+
+    return airports_connected
+
 
 def planViajero(analyzer, origen, distancia): 
 
