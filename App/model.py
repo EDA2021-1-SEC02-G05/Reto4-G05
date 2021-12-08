@@ -26,10 +26,14 @@
 
 
 
+
+#import requests
+#from DISClib.DataStructures.arraylist import addLast
 import config
-import folium
+#import folium
 from DISClib.ADT.graph import gr, vertices
 from DISClib.ADT import map as m
+from DISClib.ADT import graph as gra
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import scc
@@ -433,7 +437,7 @@ def planViajero(analyzer, origen, distancia):
     lista_pesos = lt.newList('ARRAY_LIST')
     total_pesos = 0
     for element in lt.iterator(largestBranch):
-        edge = gr.getEdge(graphND, element[0], element[1])
+        edge = gra.getEdge(graphND, element[0], element[1])
         peso = edge['weight']
         lt.addLast(lista_pesos,peso)
     for peso in lt.iterator(lista_pesos):
@@ -495,7 +499,6 @@ def Req6City(citycode, analyzer):
     lon = value['lng']
 
     return lat, lon
-
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
