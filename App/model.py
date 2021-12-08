@@ -28,6 +28,7 @@
 
 
 #import requests
+from DISClib.DataStructures.arraylist import addLast
 import config
 from DISClib.ADT.graph import gr, vertices
 from DISClib.ADT import map as m
@@ -368,6 +369,10 @@ def getClusterNum(cluster):
 
 def planViajero(analyzer, origen, distancia): 
     lista = lt.newList('ARRAY_LIST')
+    lista2 = lt.newList('ARRAY_LIST')
+    sublista = lt.newList('ARRAY_LIST')
+    hola = lt.newList('ARRAY_LIST')
+
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
     tree = mst["mst"]    
@@ -381,22 +386,60 @@ def planViajero(analyzer, origen, distancia):
         nodo = i['vertexA']
         nodo2 = i['vertexB']
         exist = lt.isPresent(lista,nodo) 
-        print(exist)
+        #print(exist)
         exist2 = lt.isPresent(lista,nodo2) 
-        print(exist2)
+        #print(exist2)
         if (exist == 0):
             lt.addLast(lista, nodo)
         if (exist2 == 0):
             lt.addLast(lista, nodo2)
-    print(lista)
+    #print(lista)
     nodesConnected = lt.size(lista)
     print(nodesConnected)
     
+    ruta = dfs.DepthFirstSearch(graphND, origen)
+    for i in lt.iterator(tree):
+        nodo = i['vertexA']
+        nodo2 = i['vertexB']
+        path = dfs.pathTo(ruta, nodo)
+        path2 = dfs.pathTo(ruta, nodo2)
+        if path and path2:
+            sublista = lt.newList('ARRAY_LIST')
+            lt.addLast(sublista,path)
+            lt.addLast(sublista,path2)
+        lt.addLast(lista2, sublista)
+        for i in lt.iterator(sublista):
+            l = lt.newList('ARRAY_LIST')
+            for j in lt.iterator(i):
+                posicion = (lt.isPresent(i, j))+1
+                if posicion <= lt.size(i):
+                    elemento = lt.getElement(i,posicion)
+                    j = (j, elemento)
+                    lt.addLast(l,j)
+            #print(l)
+            for m in (l["elements"]):
+                exist = lt.isPresent(hola,m) 
+                if (exist == 0):
+                    lt.addLast(hola, m)
+    print(hola)
+
+
+    #print(lista2)
     
+
+    """
     ruta = dfs.DepthFirstSearch(graphND, origen)
     for node in lt.iterator(lista):
+        a = lt.newList('ARRAY_LIST')
         path = dfs.pathTo(ruta, node)
-        print(path)
+        lt.addLast(a, path)
+        #print(path)
+        l = lt.newList('ARRAY_LIST')
+        for i in lt.iterator(a):
+            for j in lt.iterator(i):
+                print(i)
+    """
+
 
     elementos = tree['first']
     largestBranch = raiz,tree
@@ -405,6 +448,15 @@ def planViajero(analyzer, origen, distancia):
     print("------------------------")
 
     return nodesConnected, weight, largestBranch, km_milles
+
+def formating(sublista):
+     for i in lt.iterator(sublista):
+            l = lt.newList('ARRAY_LIST')
+            for j in lt.iterator(i):
+                #l = lt.newList('ARRAY_LIST')
+                lt.addLast(l,j)
+        
+    
 
 
 def getTraficClustersCon(cluster, IATA1,IATA2):
