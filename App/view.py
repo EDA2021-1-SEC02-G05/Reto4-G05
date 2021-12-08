@@ -69,8 +69,7 @@ def printReq1(respuesta):
     first_5 = lt.subList(respuesta[1],1,5)
     for i in lt.iterator(first_5):
         print('Aeropuerto: ' + i['Aeropueto'] + ', Ciudad: ' + i['Ciudad'] + ', País: ' + i['Pais'] + ', IATA: ' + i['IATA'] + ', Total Conexiones: ' + str(i['TotalConnections'])  + '\n')
-    #print(lt.isPresent(respuesta[1],{'Aeropuerto': 'VLD', 'TotalConnections': 1}))
-    #print(lt.getElement(respuesta[1],3291))
+
 
 def printReq2(total_clusters, aeropuertos_mismo, IATA1, IATA2):
 
@@ -193,32 +192,30 @@ def thread_cycle():
 
             print('Total de ciudades cargadas: ' + str(num_ciudades) + '\n')
 
-            airport_mapa = analyzer['AirportIATAS']
+            airport_size = lt.size(analyzer['airport_lst'])
+            airportfirst = lt.getElement(analyzer['airport_lst'],1)
+            airportlast = lt.getElement(analyzer['airport_lst'],airport_size)
+          
 
-            airportDs = gr.vertices(analyzer['AirportRoutesD'])
-            first_airportD = lt.getElement(airportDs, 1)
+            print('\nA continuación se muestra la información del primer y último aeropuerto cargado tanto para el grafo dirigido como el no dirigido: \n')
 
-            airport_infoD = m.get(airport_mapa, first_airportD)
+            print('Nombre: ' + airportfirst['Name'] + ', Ciudad: ' + airportfirst['City'] + ', Pais: ' + airportfirst['Country'] + ', Latitud: ' + airportfirst['Latitude'] + ', Longitud: ' + airportfirst['Longitude'] )
+            print('Nombre: ' + airportlast['Name'] + ', Ciudad: ' + airportlast['City'] + ', Pais: ' + airportlast['Country'] + ', Latitud: ' + airportlast['Latitude'] + ', Longitud: ' + airportlast['Longitude'] )
 
-            #grafo no dirigido
-
-            print('\nA continuación se muestra la información del primer aeropuerto cargado para el grafo dirigido y no dirigido respectivamente: \n')
-            print('Nombre: ' + airport_infoD['value']['Name'] + ', Ciudad: ' + airport_infoD['value']['City'] + ', Pais: ' + airport_infoD['value']['Country'] + ', Latitud: ' + airport_infoD['value']['Latitude'] + ', Longitud: ' + airport_infoD['value']['Longitude'] )
-            
-            #grafo no dirigido
-
+            city_first = lt.getElement(analyzer['Cities_lst'], 1)
             city_last = lt.getElement(analyzer['Cities_lst'], num_ciudades)
 
-            print('\nA continuación se muestra la información de la última ciudad cargada:')
+            print('\nA continuación se muestra la información de la primera y última ciudad cargada:')
 
+            print('Nombre: ' + city_first['city'] + ', Población: ' + city_first['population'] + ', Latitud: ' + city_first['lat'] + ', Longitud: ' + city_first['lng'])
             print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng']+'\n')
 
         elif int(inputs[0]) == 3:
 
             'Requerimiento 1: interconecciones'
 
-            respuesta = controller.getInterconnections(analyzer)
-            printReq1(respuesta)
+            respuesta1 = controller.getInterconnections(analyzer)
+            printReq1(respuesta1)
         
         
         elif int(inputs[0]) == 4:
@@ -257,7 +254,7 @@ def thread_cycle():
 
             airport_origin = controller.ClosestairportCity(analyzer,ciudad_o_codigo)
 
-            dijkstra_airport = controller.DijkstraAirport(analyzer, airport_origin)
+            dijkstra_airport = controller.DijkstraAirport(analyzer, airport_origin[0])
             
             destino = input('Escoja la ciudad de destino: ')
 
@@ -277,9 +274,9 @@ def thread_cycle():
 
             airport_destination = controller.ClosestairportCity(analyzer,ciudad_d_codigo)
 
-            respuesta = controller.getShortestRoute(dijkstra_airport, airport_destination)
+            respuesta3 = controller.getShortestRoute(dijkstra_airport, airport_destination[0],airport_destination[1],airport_origin[1])
 
-            printReq3(analyzer, respuesta[0],respuesta[1], airport_origin, airport_destination)
+            printReq3(analyzer, respuesta3[0],respuesta3[1], airport_origin[0], airport_destination[0])
 
 
         elif int(inputs[0]) == 6:
@@ -349,11 +346,13 @@ def thread_cycle():
 
             origen_latsylons = controller.Req6City(ciudad_o_codigo, analyzer)
 
-            print(origen_latsylons)
-
             token = input('Ingrese el access token: ')
 
-            airport_origin = queryAPI.Req6ClosestAirport( token,origen_latsylons[0], origen_latsylons[1])
+            queryAPI.Req6ClosestAirport( token,origen_latsylons[0], origen_latsylons[1])
+
+            iata1 = input('Ingrese código IATA devuelto para el aeropuerto de origen más relevante: ')
+
+            dijkstra_airport = controller.DijkstraAirport(analyzer, iata1)
 
             city_destiny = input('Ingrese ciudad de destino que desea: ')
 
@@ -373,15 +372,23 @@ def thread_cycle():
 
             destination_latsylons = controller.Req6City(ciudad_d_codigo, analyzer)
 
-            print(destination_latsylons)
+            queryAPI.Req6ClosestAirport(token,destination_latsylons[0], destination_latsylons[1])
 
-            airport_destination = queryAPI.Req6ClosestAirport(token,destination_latsylons[0], destination_latsylons[1])
+            iata2 = input('Ingrese código IATA devuelto para el aeropuerto de origen más relevante: ')
+
+            respuesta6 = controller.getShortestRoute(dijkstra_airport, iata2)
+
+            print(respuesta6)
 
             pass
 
         elif int(inputs[0]) == 9:
 
             'Bono: Visualizar gráficamente los requerimientos'
+            #Req-1
+            
+            mapa1 = controller.req7_1(respuesta1,analyzer)
+
             pass
 
         elif int(inputs[0]) == 0:

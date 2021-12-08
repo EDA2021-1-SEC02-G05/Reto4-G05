@@ -135,10 +135,14 @@ def planViajero(analyzer, origen, distancia):
     
     return model.planViajero(analyzer, origen, distancia)
 
-def getShortestRoute(dijkstra, airport2):
+def getShortestRoute(dijkstra, airport2, city_d_distance, city_o_distance):
 
-    return model.getShortestRoute(dijkstra, airport2)
+    return model.getShortestRoute(dijkstra, airport2, city_d_distance, city_o_distance)
 
 def Req6City(city, analyzer):
 
     return model.Req6City(city, analyzer)
+
+def req7_1(respuesta,analyzer):
+
+    return model.req7_1(respuesta,analyzer)

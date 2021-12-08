@@ -28,8 +28,9 @@
 
 
 #import requests
-from DISClib.DataStructures.arraylist import addLast
+#from DISClib.DataStructures.arraylist import addLast
 import config
+#import folium
 from DISClib.ADT.graph import gr, vertices
 from DISClib.ADT import map as m
 from DISClib.ADT import graph as gra
@@ -68,6 +69,7 @@ def newAnalyzer():
                     'AirportIATAS': None,
                     'AirportRoutesD': None,
                     'AirportRoutesND': None,
+                    'airport_lst':None,
                     'CitiesMapInfo': None,
                     'Cities_lst':None,
                     'AirpotsInterconnected':None,
@@ -90,6 +92,7 @@ def newAnalyzer():
                                               directed=False,
                                               size=14000,
                                               comparefunction=compareAirportIATA) #tiene unicamente interconexiones entre aeropuertos con vuelos de ida y regreso
+                                              
         analyzer['Cities_lst'] = lt.newList('ARRAY_LIST') #contiene todas las ciudades
 
         analyzer['CitiesMapInfo'] = m.newMap(numelements=42000,
@@ -133,9 +136,6 @@ def addAirportVertex(analyzer, airport):
     if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
         gr.insertVertex(analyzer['AirportRoutesD'], airport1)
 
-    if not gr.containsVertex(analyzer['AirportRoutesND'], airport1):
-            gr.insertVertex(analyzer['AirportRoutesND'], airport1)
-
     return analyzer
 
 
@@ -166,6 +166,13 @@ def addAirportNDConnection(analyzer,origin,destination,distance):
     arco_destination = gr.getEdge(analyzer['AirportRoutesD'],destination,origin)
 
     if arco_origin != None and arco_destination != None:
+
+        if not gr.containsVertex(analyzer['AirportRoutesND'], origin):
+            gr.insertVertex(analyzer['AirportRoutesND'], origin)
+
+        if not gr.containsVertex(analyzer['AirportRoutesND'], destination):
+            gr.insertVertex(analyzer['AirportRoutesND'], destination)
+
 
         addConnection(analyzer['AirportRoutesND'], origin, destination, distance)
 
@@ -264,7 +271,10 @@ def addInterconnections(analyzer):
                 "IATA": vertex, 
                 "Ciudad": info["City"],
                 "Pais": info["Country"],
+                'Latitud': info['Latitude'],
+                'Longitud':info['Longitude'],
                 "TotalConnections": total_arcos,
+                
                 }
         lt.addLast(analyzer["AirpotsInterconnected"], datos)
 
@@ -283,6 +293,8 @@ def addInterconnectionsND(analyzer):
                 "IATA": vertex, 
                 "Ciudad": info["City"],
                 "Pais": info["Country"],
+                'Latitud': info['Latitude'],
+                'Longitud':info['Longitude'],
                 "TotalConnections": total_arcosND,
                 }
         lt.addLast(analyzer["AirpotsInterconnectedND"], datos)
@@ -367,6 +379,11 @@ def getClusterNum(cluster):
 
     return cluster_num
 
+def getTraficClustersCon(cluster, IATA1,IATA2):
+
+    airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
+
+    return airports_connected 
 
 def planViajero(analyzer, origen, distancia): 
 
@@ -437,11 +454,6 @@ def planViajero(analyzer, origen, distancia):
 
 
 
-def getTraficClustersCon(cluster, IATA1,IATA2):
-
-    airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
-
-    return airports_connected
 
 def ClosestairportCity(analyzer,city_id):
 
@@ -449,8 +461,9 @@ def ClosestairportCity(analyzer,city_id):
     airportentry = m.get(city_closest_map,city_id)
     airportvalue = me.getValue(airportentry)
     airportIATA = airportvalue['AirportClosest']
+    airport_city_distance = airportvalue['DistanceClosest']
 
-    return airportIATA
+    return airportIATA, airport_city_distance
 
 
 def DijkstraAirport(analyzer, airport):
@@ -460,13 +473,13 @@ def DijkstraAirport(analyzer, airport):
     return shortest_routes
 
 
-def getShortestRoute(dijkstra, airport2):
+def getShortestRoute(dijkstra, airport2, city_d_distance, city_o_distance):#Toca incluir distancia de ciudad origen a ciudad destino? porq en ejemplo no sale pero ns
 
     if djk.hasPathTo(dijkstra,airport2):
 
         dijk_route = djk.pathTo(dijkstra,airport2)
 
-        dist_total = djk.distTo(dijkstra, airport2)
+        dist_total = (djk.distTo(dijkstra, airport2)) + city_d_distance + city_o_distance
 
         return dijk_route,dist_total
 
@@ -489,6 +502,45 @@ def Req6City(citycode, analyzer):
 
     return lat, lon
 
+"""
+def req7_1(respuesta,analyzer):
+
+    graph = analyzer['AirportRoutesD']
+
+    #map = folium.Map(tiles = 'Stamen Terrain', zoom_start=4)
+
+    airport_name_lst = []
+    airport_iata_lst = []
+    ciudad_lst = []
+    pais_lst = []
+    interconexiones_lst = []
+    lat_lst = []
+    lon_lst = []
+
+    for aeropuerto in respuesta:
+        airport_name_lst.append(aeropuerto['Aeropueto'])
+        airport_iata_lst.append(aeropuerto['IATA'])
+        ciudad_lst.append(aeropuerto['Ciudad'])
+        pais_lst.append(aeropuerto['Pais'])
+        interconexiones_lst.append(aeropuerto['TotalConnections'])
+        lat_lst.append(float(aeropuerto['Latitud']))
+        lon_lst.append(float(aeropuerto['Longitud']))
+
+
+    for name,iata,ciudad,pais,inter,lat,lon in zip(airport_name_lst, airport_iata_lst,ciudad_lst, pais_lst, interconexiones_lst,lat_lst,lon_lst):
+
+        loc = [lat,lon]
+        data = 'Nombre: ' + name + ', IATA: '+iata+ ' , Ciudad: ' + ciudad +' , País: '+ pais+ ' , Total de Interconexiones: ' +inter
+
+        folium.Marker(
+            location = loc,
+            popup = folium.Popup(data,max_width=450),
+            icon = folium.Icon(color = 'red', icon_color= 'white', icon = 'plane', prefix = 'glyphicon')
+            ).add_to(map)
+
+    map.save(outfile='mapa.html')
+
+"""
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareAirport():
