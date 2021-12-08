@@ -132,9 +132,6 @@ def addAirportVertex(analyzer, airport):
     if not gr.containsVertex(analyzer['AirportRoutesD'], airport1):
         gr.insertVertex(analyzer['AirportRoutesD'], airport1)
 
-    if not gr.containsVertex(analyzer['AirportRoutesND'], airport1):
-            gr.insertVertex(analyzer['AirportRoutesND'], airport1)
-
     return analyzer
 
 
@@ -165,6 +162,13 @@ def addAirportNDConnection(analyzer,origin,destination,distance):
     arco_destination = gr.getEdge(analyzer['AirportRoutesD'],destination,origin)
 
     if arco_origin != None and arco_destination != None:
+
+        if not gr.containsVertex(analyzer['AirportRoutesND'], origin):
+            gr.insertVertex(analyzer['AirportRoutesND'], origin)
+
+        if not gr.containsVertex(analyzer['AirportRoutesND'], destination):
+            gr.insertVertex(analyzer['AirportRoutesND'], destination)
+
 
         addConnection(analyzer['AirportRoutesND'], origin, destination, distance)
 
@@ -418,8 +422,9 @@ def ClosestairportCity(analyzer,city_id):
     airportentry = m.get(city_closest_map,city_id)
     airportvalue = me.getValue(airportentry)
     airportIATA = airportvalue['AirportClosest']
+    airport_city_distance = airportvalue['DistanceClosest']
 
-    return airportIATA
+    return airportIATA, airport_city_distance
 
 
 def DijkstraAirport(analyzer, airport):
@@ -429,13 +434,13 @@ def DijkstraAirport(analyzer, airport):
     return shortest_routes
 
 
-def getShortestRoute(dijkstra, airport2):
+def getShortestRoute(dijkstra, airport2, city_d_distance, city_o_distance):#Toca incluir distancia de ciudad origen a ciudad destino? porq en ejemplo no sale pero ns
 
     if djk.hasPathTo(dijkstra,airport2):
 
         dijk_route = djk.pathTo(dijkstra,airport2)
 
-        dist_total = djk.distTo(dijkstra, airport2)
+        dist_total = (djk.distTo(dijkstra, airport2)) + city_d_distance + city_o_distance
 
         return dijk_route,dist_total
 
