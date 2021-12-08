@@ -142,3 +142,7 @@ def getShortestRoute(dijkstra, airport2):
 def Req6City(city, analyzer):
 
     return model.Req6City(city, analyzer)
+
+def req7_1(respuesta,analyzer):
+
+    return model.req7_1(respuesta,analyzer)

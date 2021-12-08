@@ -30,6 +30,7 @@
 import requests
 import config
 from DISClib.ADT.graph import gr
+import folium
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
@@ -64,6 +65,7 @@ def newAnalyzer():
                     'AirportIATAS': None,
                     'AirportRoutesD': None,
                     'AirportRoutesND': None,
+                    'airport_lst':None,
                     'CitiesMapInfo': None,
                     'Cities_lst':None,
                     'AirpotsInterconnected':None,
@@ -86,6 +88,7 @@ def newAnalyzer():
                                               directed=False,
                                               size=14000,
                                               comparefunction=compareAirportIATA) #tiene unicamente interconexiones entre aeropuertos con vuelos de ida y regreso
+                                              
         analyzer['Cities_lst'] = lt.newList('ARRAY_LIST') #contiene todas las ciudades
 
         analyzer['CitiesMapInfo'] = m.newMap(numelements=42000,
@@ -260,7 +263,10 @@ def addInterconnections(analyzer):
                 "IATA": vertex, 
                 "Ciudad": info["City"],
                 "Pais": info["Country"],
+                'Latitud': info['Latitude'],
+                'Longitud':info['Longitude'],
                 "TotalConnections": total_arcos,
+                
                 }
         lt.addLast(analyzer["AirpotsInterconnected"], datos)
 
@@ -279,6 +285,8 @@ def addInterconnectionsND(analyzer):
                 "IATA": vertex, 
                 "Ciudad": info["City"],
                 "Pais": info["Country"],
+                'Latitud': info['Latitude'],
+                'Longitud':info['Longitude'],
                 "TotalConnections": total_arcosND,
                 }
         lt.addLast(analyzer["AirpotsInterconnectedND"], datos)
@@ -363,6 +371,12 @@ def getClusterNum(cluster):
 
     return cluster_num
 
+def getTraficClustersCon(cluster, IATA1,IATA2):
+
+    airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
+
+    return airports_connected
+
 def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en origen 
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
@@ -380,11 +394,6 @@ def planViajero(analyzer, origen, distancia): #no capto como hago que empiece en
 
     return nodesConnected, weight, largestBranch, km_milles
 
-def getTraficClustersCon(cluster, IATA1,IATA2):
-
-    airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
-
-    return airports_connected
 
 def ClosestairportCity(analyzer,city_id):
 
@@ -431,6 +440,44 @@ def Req6City(citycode, analyzer):
     lon = value['lng']
 
     return lat, lon
+
+def req7_1(respuesta,analyzer):
+
+    graph = analyzer['AirportRoutesD']
+
+    map = folium.Map(tiles = 'Stamen Terrain', zoom_start=4)
+
+    airport_name_lst = []
+    airport_iata_lst = []
+    ciudad_lst = []
+    pais_lst = []
+    interconexiones_lst = []
+    lat_lst = []
+    lon_lst = []
+
+    for aeropuerto in respuesta:
+        airport_name_lst.append(aeropuerto['Aeropueto'])
+        airport_iata_lst.append(aeropuerto['IATA'])
+        ciudad_lst.append(aeropuerto['Ciudad'])
+        pais_lst.append(aeropuerto['Pais'])
+        interconexiones_lst.append(aeropuerto['TotalConnections'])
+        lat_lst.append(float(aeropuerto['Latitud']))
+        lon_lst.append(float(aeropuerto['Longitud']))
+
+
+    for name,iata,ciudad,pais,inter,lat,lon in zip(airport_name_lst, airport_iata_lst,ciudad_lst, pais_lst, interconexiones_lst,lat_lst,lon_lst):
+
+        loc = [lat,lon]
+        data = 'Nombre: ' + name + ', IATA: '+iata+ ' , Ciudad: ' + ciudad +' , País: '+ pais+ ' , Total de Interconexiones: ' +inter
+
+        folium.Marker(
+            location = loc,
+            popup = folium.Popup(data,max_width=450),
+            icon = folium.Icon(color = 'red', icon_color= 'white', icon = 'plane', prefix = 'glyphicon')
+            ).add_to(map)
+
+    map.save(outfile='mapa.html')
+
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
