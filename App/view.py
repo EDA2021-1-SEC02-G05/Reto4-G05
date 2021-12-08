@@ -115,6 +115,8 @@ def printReq4(respuesta, origen, millas):
     elif respuesta[3] == 0:
         print("La cantidad de millas según la distancia total recomendada es exacta"+ "\n")
     
+    #print(respuesta[4])
+    
 #excedentes
 
     pass
