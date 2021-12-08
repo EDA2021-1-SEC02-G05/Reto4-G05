@@ -104,9 +104,10 @@ def printReq3(analyzer, ruta, distancia_total, aero_origen, aero_destino):
 def printReq4(respuesta, origen, millas):
 
     print("Dado la ciudad de origen " + origen+ " y un total de "+str(millas)+ " millas. Se encontró que: \n")
-    print("El número de nodos conectados al arbol de expansión minima es: " + str(respuesta[0]))
-    print("El costo total (distancia en [km]) al árbol de expansión mínima es: " + str(respuesta[1]))
-    print("La rama más larga que hace parte del árbol de expansión mínima es: " + str(respuesta[2]))
+    print("Número de posibles aeropuertos: " + str(respuesta[0]))
+    print("Suma de la distanca de viaje entre aeropuertos [km]: " + str(respuesta[1]))
+    print("Camino más largo posible (ida y vuelta): " + str(respuesta[2]))
+    print("Distancia del camino más largo posible: " + str(respuesta[4]))
 
     if respuesta[3] > 0:
         print("La cantidad de millas faltantes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
@@ -114,12 +115,6 @@ def printReq4(respuesta, origen, millas):
         print("La cantidad de millas excedentes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
     elif respuesta[3] == 0:
         print("La cantidad de millas según la distancia total recomendada es exacta"+ "\n")
-    
-    #print(respuesta[4])
-    
-#excedentes
-
-    pass
 
 def printReq5(analyzer, lista, tamano, IATA):
 
@@ -283,13 +278,32 @@ def thread_cycle():
         elif int(inputs[0]) == 6:
 
             'Requerimiento 4: Utilizar las millas de viajero'
-            
+        
             origen= input("Ingrese la ciudad de origen: ")
             millas = int(input("Ingrese cantidad millas disponibles: "))
-            distancia = millas*1.6
-            respuesta4 = controller.planViajero(analyzer, origen, distancia)
+            distancia = millas
+            ####3
+            ciudades_o = controller.getCities(analyzer, origen)
 
-            printReq4(respuesta4, origen, millas)
+            if lt.size(ciudades_o) > 1:
+
+                print('Se encontraron los siguientes códigos de ciudades con el mismo nombre que usted seleccionó: ')
+
+                for ciudad in lt.iterator(ciudades_o):
+
+                    print(ciudad['city']+', '+ ciudad['country'] + ', ' + ciudad['lat'] + ', ' + ciudad['lng'] + ', ' + ciudad['id'])
+
+                ciudad_o_codigo = input('De las anteriores ciudades, seleccione el código de la que quiere como ciudad de origen: ')
+
+            else:
+
+                ciudad_o_codigo = ciudades_o['elements'][0]['id']
+
+            airport_origin = controller.ClosestairportCity(analyzer,ciudad_o_codigo)
+            ######
+            respuesta = controller.planViajero(analyzer, airport_origin, distancia)
+
+            printReq4(respuesta, origen, millas)
 
 
         elif int(inputs[0]) == 7:

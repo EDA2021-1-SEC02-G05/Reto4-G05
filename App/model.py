@@ -382,38 +382,71 @@ def getTraficClustersCon(cluster, IATA1,IATA2):
     return airports_connected 
 
 def planViajero(analyzer, origen, distancia): 
-    lista = lt.newList('ARRAY_LIST')
+
+    lista_nodos = lt.newList('ARRAY_LIST')
+    posibles_caminos = lt.newList('ARRAY_LIST')#####
+    largestBranch = lt.newList('ARRAY_LIST')
+
     graphND = analyzer['AirportRoutesND']
     mst = prim.PrimMST(graphND)
     tree = mst["mst"]    
     
     weight = prim.weightMST(graphND, mst)
-    nodesConnected = tree['size']
-    #for i in range(nodesConnected):
-    raiz = tree['first']["info"]["vertexA"]
-    a = []
+
+    ruta = dfs.DepthFirstSearch(graphND, origen)
     for i in lt.iterator(tree):
         nodo = i['vertexA']
         nodo2 = i['vertexB']
-        if (nodo not in a):
-            a.append(nodo)
-        if (nodo2 not in a):
-            a.append(nodo2)
-    print(a)
+        
+        #lista de nodos
+        exist = lt.isPresent(lista_nodos,nodo) 
+        exist2 = lt.isPresent(lista_nodos,nodo2) 
+        if (exist == 0):
+            lt.addLast(lista_nodos, nodo)
+        if (exist2 == 0):
+            lt.addLast(lista_nodos, nodo2)
+        
+        #encontrar camino
+        path = dfs.pathTo(ruta, nodo)
+        path2 = dfs.pathTo(ruta, nodo2)
+        if path and path2:
+            posibles_caminos = lt.newList('ARRAY_LIST')
+            lt.addLast(posibles_caminos,path)
+            lt.addLast(posibles_caminos,path2)
+        
+        for i in lt.iterator(posibles_caminos):
+            union_caminos = lt.newList('ARRAY_LIST')
+            #print(i)
+            for iata in lt.iterator(i):
+                #hacer pareja
+                posicion = (lt.isPresent(i, iata))+1
+                if posicion <= lt.size(i):
+                    elemento = lt.getElement(i,posicion)
+                    pareja_iata = (iata, elemento)
+                    lt.addLast(union_caminos,pareja_iata)
+            for m in (union_caminos["elements"]):
+                exist = lt.isPresent(largestBranch,m) 
+                if (exist == 0):
+                    lt.addLast(largestBranch, m)
 
+    #distancia total
+    lista_pesos = lt.newList('ARRAY_LIST')
+    total_pesos = 0
+    for element in lt.iterator(largestBranch):
+        edge = gr.getEdge(graphND, element[0], element[1])
+        peso = edge['weight']
+        lt.addLast(lista_pesos,peso)
+    for peso in lt.iterator(lista_pesos):
+        total_pesos = total_pesos + peso
     
-    ruta = dfs.DepthFirstSearch(graphND, origen)
-    for i in a:
-        path = dfs.pathTo(ruta, i)
-        print(path)
-
-    elementos = tree['first']
-    largestBranch = raiz,tree
-    km_milles = weight - distancia
+    distancia_total = total_pesos*2
+    print(distancia_total)
     
+    nodesConnected = lt.size(lista_nodos)
+    largestBranch = largestBranch["elements"]
+    milles = ((distancia * 1.6) - distancia_total)/1.6
 
-
-    return nodesConnected, weight, largestBranch, km_milles
+    return nodesConnected, weight, largestBranch, milles, distancia_total
 
 
 def ClosestairportCity(analyzer,city_id):
@@ -462,43 +495,6 @@ def Req6City(citycode, analyzer):
     lon = value['lng']
 
     return lat, lon
-
-def req7_1(respuesta,analyzer):
-
-    graph = analyzer['AirportRoutesD']
-
-    map = folium.Map(tiles = 'Stamen Terrain', zoom_start=4)
-
-    airport_name_lst = []
-    airport_iata_lst = []
-    ciudad_lst = []
-    pais_lst = []
-    interconexiones_lst = []
-    lat_lst = []
-    lon_lst = []
-
-    for aeropuerto in respuesta:
-        airport_name_lst.append(aeropuerto['Aeropueto'])
-        airport_iata_lst.append(aeropuerto['IATA'])
-        ciudad_lst.append(aeropuerto['Ciudad'])
-        pais_lst.append(aeropuerto['Pais'])
-        interconexiones_lst.append(aeropuerto['TotalConnections'])
-        lat_lst.append(float(aeropuerto['Latitud']))
-        lon_lst.append(float(aeropuerto['Longitud']))
-
-
-    for name,iata,ciudad,pais,inter,lat,lon in zip(airport_name_lst, airport_iata_lst,ciudad_lst, pais_lst, interconexiones_lst,lat_lst,lon_lst):
-
-        loc = [lat,lon]
-        data = 'Nombre: ' + name + ', IATA: '+iata+ ' , Ciudad: ' + ciudad +' , País: '+ pais+ ' , Total de Interconexiones: ' +inter
-
-        folium.Marker(
-            location = loc,
-            popup = folium.Popup(data,max_width=450),
-            icon = folium.Icon(color = 'red', icon_color= 'white', icon = 'plane', prefix = 'glyphicon')
-            ).add_to(map)
-
-    map.save(outfile='mapa.html')
 
 
 
