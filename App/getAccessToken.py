@@ -1,5 +1,5 @@
 # https://docs.python-requests.org/en/latest/
-#import requests
+import requests
 
 # https://developers.amadeus.com/self-service/apis-docs/guides/authorization-262
 
@@ -12,7 +12,7 @@ def accestoken():
     "client_secret": ""               #API Secret, TODO
   }
 
-  #r = requests.post('https://test.api.amadeus.com/v1/security/oauth2/token', headers=headers, data=data)
+  r = requests.post('https://test.api.amadeus.com/v1/security/oauth2/token', headers=headers, data=data)
 
   print("access_token:")
-  #print(r.json()["access_token"])
+  print(r.json()["access_token"])

@@ -436,13 +436,6 @@ def planViajero(analyzer, origen, distancia):
     return nodesConnected, weight, largestBranch, milles, distancia_total
 
 
-
-def getTraficClustersCon(cluster, IATA1,IATA2):
-
-    airports_connected = scc.stronglyConnected(cluster, IATA1, IATA2)
-
-    return airports_connected
-
 def ClosestairportCity(analyzer,city_id):
 
     city_closest_map = analyzer['Cities-Airport']

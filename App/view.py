@@ -116,10 +116,6 @@ def printReq4(respuesta, origen, millas):
         print("La cantidad de millas excedentes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
     elif respuesta[3] == 0:
         print("La cantidad de millas según la distancia total recomendada es exacta"+ "\n")
-    
-#excedentes
-
-    pass
 
 def printReq5(analyzer, lista, tamano, IATA):
 
@@ -285,7 +281,7 @@ def thread_cycle():
         elif int(inputs[0]) == 6:
 
             'Requerimiento 4: Utilizar las millas de viajero'
-            
+        
             origen= input("Ingrese la ciudad de origen: ")
             millas = int(input("Ingrese cantidad millas disponibles: "))
             distancia = millas
