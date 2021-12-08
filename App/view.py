@@ -51,7 +51,6 @@ def printMenu():
     print('6- Utilizar las millas de viajero')
     print('7- Cuantificar el efecto de un aeropuerto cerrado')
     print('8- Comparar con servicio WEB externo')
-    print('9- Visualizar gráficamente los requerimientos')
     print('0- Salir')
 
 
@@ -107,13 +106,16 @@ def printReq4(respuesta, origen, millas):
     print("Dado la ciudad de origen " + origen+ " y un total de "+str(millas)+ " millas. Se encontró que: \n")
     print("Número de posibles aeropuertos: " + str(respuesta[0]))
     print("Suma de la distanca de viaje entre aeropuertos [km]: " + str(respuesta[1]))
-    print("Camino más largo posible (ida y vuelta): " + str(respuesta[2]))
-    print("Distancia del camino más largo posible: " + str(respuesta[4]))
+    print("Camino más largo posible (ida y vuelta): ")
+    for trayecto in respuesta[2]:
+        print(trayecto)
+    print('\n')
+    print("Distancia del camino más largo posible [Km]: " + str(respuesta[4]))
 
     if respuesta[3] > 0:
-        print("La cantidad de millas faltantes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
+        print("La cantidad de millas excedentes o que no se usaron según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
     elif respuesta[3] < 0:
-        print("La cantidad de millas excedentes según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
+        print("La cantidad de millas faltantes o que se necesitan de más según la distancia total recomendada es: " + str(abs(respuesta[3]))+ "\n")
     elif respuesta[3] == 0:
         print("La cantidad de millas según la distancia total recomendada es exacta"+ "\n")
 
@@ -165,7 +167,7 @@ def thread_cycle():
 
         elif int(inputs[0]) == 2:
 
-            print('Cargando información de aeropuertos en el mundo...')
+            print('Cargando información de aeropuertos en el mundo...') 
 
             controller.loadData(analyzer)
 
@@ -189,25 +191,24 @@ def thread_cycle():
 
             print('Total de ciudades cargadas: ' + str(num_ciudades) + '\n')
 
-            airport_mapa = analyzer['AirportIATAS']
+            airport_size = lt.size(analyzer['airport_lst'])
+            airportfirst = lt.getElement(analyzer['airport_lst'],1)
+            airportlast = lt.getElement(analyzer['airport_lst'],airport_size)
+          
 
-            airportDs = gr.vertices(analyzer['AirportRoutesD'])
-            first_airportD = lt.getElement(airportDs, 1)
+            print('\nA continuación se muestra la información del primer y último aeropuerto cargado tanto para el grafo dirigido como el no dirigido: \n')
 
-            airport_infoD = m.get(airport_mapa, first_airportD)
+            print('Nombre: ' + airportfirst['Name'] + ', Ciudad: ' + airportfirst['City'] + ', Pais: ' + airportfirst['Country'] + ', Latitud: ' + airportfirst['Latitude'] + ', Longitud: ' + airportfirst['Longitude'] )
+            print('Nombre: ' + airportlast['Name'] + ', Ciudad: ' + airportlast['City'] + ', Pais: ' + airportlast['Country'] + ', Latitud: ' + airportlast['Latitude'] + ', Longitud: ' + airportlast['Longitude'] )
 
-            #grafo no dirigido
-
-            print('\nA continuación se muestra la información del primer aeropuerto cargado para el grafo dirigido y no dirigido respectivamente: \n')
-            print('Nombre: ' + airport_infoD['value']['Name'] + ', Ciudad: ' + airport_infoD['value']['City'] + ', Pais: ' + airport_infoD['value']['Country'] + ', Latitud: ' + airport_infoD['value']['Latitude'] + ', Longitud: ' + airport_infoD['value']['Longitude'] )
-            
-            #grafo no dirigido
-
+            city_first = lt.getElement(analyzer['Cities_lst'], 1)
             city_last = lt.getElement(analyzer['Cities_lst'], num_ciudades)
 
-            print('\nA continuación se muestra la información de la última ciudad cargada:')
+            print('\nA continuación se muestra la información de la primera y última ciudad cargada:')
 
+            print('Nombre: ' + city_first['city'] + ', Población: ' + city_first['population'] + ', Latitud: ' + city_first['lat'] + ', Longitud: ' + city_first['lng'])
             print('Nombre: ' + city_last['city'] + ', Población: ' + city_last['population'] + ', Latitud: ' + city_last['lat'] + ', Longitud: ' + city_last['lng']+'\n')
+
 
         elif int(inputs[0]) == 3:
 
