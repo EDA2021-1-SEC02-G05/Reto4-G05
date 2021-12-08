@@ -373,31 +373,36 @@ def planViajero(analyzer, origen, distancia):
     tree = mst["mst"]    
     
     weight = prim.weightMST(graphND, mst)
-    nodesConnected = tree['size']
+    routeConnected = tree['size']
     #for i in range(nodesConnected):
     raiz = tree['first']["info"]["vertexA"]
-    a = []
+    #a = []
     for i in lt.iterator(tree):
         nodo = i['vertexA']
         nodo2 = i['vertexB']
-        if (nodo not in a):
-            a.append(nodo)
-        if (nodo2 not in a):
-            a.append(nodo2)
-    print(a)
-
+        exist = lt.isPresent(lista,nodo) 
+        print(exist)
+        exist2 = lt.isPresent(lista,nodo2) 
+        print(exist2)
+        if (exist == 0):
+            lt.addLast(lista, nodo)
+        if (exist2 == 0):
+            lt.addLast(lista, nodo2)
+    print(lista)
+    nodesConnected = lt.size(lista)
+    print(nodesConnected)
     
     
     ruta = dfs.DepthFirstSearch(graphND, origen)
-    for i in a:
-        path = dfs.pathTo(ruta, i)
+    for node in lt.iterator(lista):
+        path = dfs.pathTo(ruta, node)
         print(path)
 
     elementos = tree['first']
     largestBranch = raiz,tree
     km_milles = weight - distancia
     
-
+    print("------------------------")
 
     return nodesConnected, weight, largestBranch, km_milles
 
