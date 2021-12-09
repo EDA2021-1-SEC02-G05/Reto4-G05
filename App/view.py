@@ -252,7 +252,7 @@ def thread_cycle():
 
             airport_origin = controller.ClosestairportCity(analyzer,ciudad_o_codigo)
 
-            dijkstra_airport = controller.DijkstraAirport(analyzer, airport_origin)
+            dijkstra_airport_ori = controller.DijkstraAirport(analyzer, airport_origin)
             
             destino = input('Escoja la ciudad de destino: ')
 
@@ -269,10 +269,13 @@ def thread_cycle():
             else:
 
                 ciudad_d_codigo = ciudades_d['elements'][0]['id']
+        
 
             airport_destination = controller.ClosestairportCity(analyzer,ciudad_d_codigo)
 
-            respuesta = controller.getShortestRoute(dijkstra_airport, airport_destination)
+
+            respuesta = controller.getShortestRoute(dijkstra_airport_ori, airport_destination)
+
 
             printReq3(analyzer, respuesta[0],respuesta[1], airport_origin, airport_destination)
 
@@ -369,8 +372,6 @@ def thread_cycle():
                 ciudad_d_codigo = ciudades_d['elements'][0]['id']
 
             destination_latsylons = controller.Req6City(ciudad_d_codigo, analyzer)
-
-            print(destination_latsylons)
 
             queryAPI.Req6ClosestAirport(token,destination_latsylons[0], destination_latsylons[1])
 

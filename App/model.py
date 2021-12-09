@@ -438,7 +438,7 @@ def planViajero(analyzer, origen, distancia):
         total_pesos = total_pesos + peso
     
     distancia_total = total_pesos*2
-    print(distancia_total)
+    #print(distancia_total)
     
     nodesConnected = lt.size(lista_nodos)
     largestBranch = largestBranch["elements"]
@@ -465,6 +465,7 @@ def DijkstraAirport(analyzer, airport):
 
 
 def getShortestRoute(dijkstra, airport2):
+
 
     if djk.hasPathTo(dijkstra,airport2):
 
