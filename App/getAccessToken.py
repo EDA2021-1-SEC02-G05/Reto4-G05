@@ -8,8 +8,8 @@ def accestoken():
   headers = {"Content-Type": "application/x-www-form-urlencoded"}
   data ={
     "grant_type": "client_credentials", 
-    "client_id": "",                  #API KEY, TODO
-    "client_secret": ""               #API Secret, TODO
+    "client_id": "kZsv7ZlRRqzaGWIVnRvAN62vFo6JIfS2",                  #API KEY, TODO
+    "client_secret": "f7Sv4UJxyC8gBFSx"               #API Secret, TODO
   }
 
   r = requests.post('https://test.api.amadeus.com/v1/security/oauth2/token', headers=headers, data=data)

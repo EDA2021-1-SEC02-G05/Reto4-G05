@@ -13,7 +13,7 @@ def Req6ClosestAirport(token, lat, lon):
 
   r = requests.get('https://test.api.amadeus.com/v1/reference-data/locations/airports', headers=headers, params=params)
 
-  #print(r.text)     #Solo para imprimir
-  print(r.json()) #Para procesar
+  print(r.text)     #Solo para imprimir
+  #print(r.json()) #Para procesar
 
   return r.json()

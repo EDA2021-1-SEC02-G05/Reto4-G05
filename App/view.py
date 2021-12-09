@@ -106,9 +106,7 @@ def printReq4(respuesta, origen, millas):
     print("Dado la ciudad de origen " + origen+ " y un total de "+str(millas)+ " millas. Se encontró que: \n")
     print("Número de posibles aeropuertos: " + str(respuesta[0]))
     print("Suma de la distanca de viaje entre aeropuertos [km]: " + str(respuesta[1]))
-    print("Camino más largo posible (ida y vuelta): ")
-    for trayecto in respuesta[2]:
-        print(trayecto)
+    print("Camino más largo posible (ida y vuelta): " + str(respuesta[2]))
     print('\n')
     print("Distancia del camino más largo posible [Km]: " + str(respuesta[4]))
 
@@ -123,11 +121,11 @@ def printReq5(analyzer, lista, tamano, IATA):
 
     print('Si el aeropuerto identificado con el código IATA ' + str(IATA) + ' se encontrara fuera de servicio, ' + str(tamano) + ' aeropuertos se verían afectados.\n')
 
-    print('A continuación se presenta la lista de aeropuertos que se verían afectados: ')
+    print('A continuación se presenta la lista de los primeros 3 y últimos 3 aeropuertos que se verían afectados: ')
 
     if tamano > 6:
-        first3 = lt.subList(list, 1, 3)
-        last3 = lt.subList(list, tamano-2 , 3)
+        first3 = lt.subList(lista, 1, 3)
+        last3 = lt.subList(lista, tamano-2 , 3)
 
         for airport in lt.iterator(first3):
             entry = m.get(analyzer['AirportIATAS'], airport)
@@ -346,11 +344,13 @@ def thread_cycle():
 
             origen_latsylons = controller.Req6City(ciudad_o_codigo, analyzer)
 
-            print(origen_latsylons)
-
             token = input('Ingrese el access token: ')
 
-            airport_origin = queryAPI.Req6ClosestAirport( token,origen_latsylons[0], origen_latsylons[1])
+            queryAPI.Req6ClosestAirport( token,origen_latsylons[0], origen_latsylons[1])
+
+            iata_O = input('Ingrese el código IATA del aeropuerto más cercano y más relevante: ')
+
+            dijkstra_airport_o = controller.DijkstraAirport(analyzer, iata_O)
 
             city_destiny = input('Ingrese ciudad de destino que desea: ')
 
@@ -372,14 +372,16 @@ def thread_cycle():
 
             print(destination_latsylons)
 
-            airport_destination = queryAPI.Req6ClosestAirport(token,destination_latsylons[0], destination_latsylons[1])
+            queryAPI.Req6ClosestAirport(token,destination_latsylons[0], destination_latsylons[1])
 
-            pass
+            iata_D = input('Ingrese el código IATA del aeropuerto más cercano y más relevante: ')
 
-        elif int(inputs[0]) == 9:
+            respuesta = controller.getShortestRoute(dijkstra_airport_o, iata_D)
 
-            'Bono: Visualizar gráficamente los requerimientos'
-            pass
+            printReq3(analyzer, respuesta[0],respuesta[1], iata_O, iata_D)
+
+
+            
 
         elif int(inputs[0]) == 0:
             sys.exit(0)
